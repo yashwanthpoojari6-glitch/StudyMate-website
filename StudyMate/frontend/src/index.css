@@ -1,0 +1,185 @@
+/* ============================================================
+   StudyMate Global Stylesheet
+   Design System: Dark-mode first, glassmorphism, micro-animations
+   ============================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base Reset & Design Tokens ─────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-[#0B0F17] text-[#F1F5F9] font-sans;
+    background-image: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 20%, rgba(16,185,129,0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  /* Custom scrollbar — subtle and slim */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0B0F17; }
+  ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+  ::selection { background: rgba(99,102,241,0.3); color: #F1F5F9; }
+}
+
+/* ── Reusable Component Classes ──────────────────────────────────────────────── */
+@layer components {
+  /* Glassmorphism card */
+  .glass-card {
+    @apply bg-[#151C2C]/80 backdrop-blur-md border border-[#1E293B] rounded-xl;
+    box-shadow: 0 0 0 1px rgba(30,41,59,0.8), 0 4px 6px -1px rgba(0,0,0,0.3);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .glass-card:hover {
+    border-color: rgba(99,102,241,0.25);
+    box-shadow: 0 0 0 1px rgba(99,102,241,0.2), 0 10px 15px -3px rgba(0,0,0,0.4);
+  }
+
+  /* Primary CTA button */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-[#6366F1] hover:bg-[#5558e0] 
+           text-white font-medium rounded-lg transition-all duration-200 
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    box-shadow: 0 0 0 0 rgba(99,102,241,0);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    box-shadow: 0 0 20px rgba(99,102,241,0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 text-[#94A3B8] hover:text-[#F1F5F9] 
+           hover:bg-[#1E293B] font-medium rounded-lg transition-all duration-200;
+  }
+
+  /* Danger button */
+  .btn-danger {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/40
+           text-red-400 hover:text-red-300 font-medium rounded-lg transition-all duration-200
+           border border-red-800/50;
+  }
+
+  /* Form input styling */
+  .form-input {
+    @apply w-full px-4 py-2.5 bg-[#0B0F17] border border-[#1E293B] rounded-lg 
+           text-[#F1F5F9] placeholder-[#475569] outline-none transition-all duration-200;
+  }
+
+  .form-input:focus {
+    @apply border-[#6366F1];
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    @apply rounded-lg bg-[#151C2C];
+    background-image: linear-gradient(90deg, #151C2C 25%, #1E293B 50%, #151C2C 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+  }
+
+  /* Priority badges */
+  .badge-chill {
+    @apply text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/20;
+  }
+
+  .badge-important {
+    @apply text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20;
+  }
+
+  .badge-urgent {
+    @apply text-xs px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/20 animate-pulse;
+  }
+
+  /* Status badges */
+  .badge-todo { @apply text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300; }
+  .badge-in_progress { @apply text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300; }
+  .badge-completed { @apply text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300; }
+
+  /* Sidebar nav item */
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#94A3B8] hover:text-[#F1F5F9] 
+           hover:bg-[#1E293B] transition-all duration-150 cursor-pointer font-medium;
+  }
+
+  .nav-item.active {
+    @apply text-[#6366F1] bg-[#6366F1]/10;
+  }
+
+  /* Markdown content styling */
+  .markdown-body {
+    @apply text-[#CBD5E1] leading-relaxed;
+  }
+
+  .markdown-body h1 { @apply text-2xl font-bold text-[#F1F5F9] mb-4 mt-6; }
+  .markdown-body h2 { @apply text-xl font-semibold text-[#F1F5F9] mb-3 mt-5; }
+  .markdown-body h3 { @apply text-lg font-semibold text-[#E2E8F0] mb-2 mt-4; }
+  .markdown-body p { @apply mb-3; }
+  .markdown-body ul { @apply list-disc list-inside mb-3 space-y-1; }
+  .markdown-body ol { @apply list-decimal list-inside mb-3 space-y-1; }
+  .markdown-body li { @apply text-[#CBD5E1]; }
+  .markdown-body code { @apply font-mono text-sm bg-[#1E293B] text-[#A5B4FC] px-1.5 py-0.5 rounded; }
+  .markdown-body pre { @apply bg-[#0B0F17] border border-[#1E293B] rounded-lg p-4 mb-4 overflow-x-auto; }
+  .markdown-body pre code { @apply bg-transparent text-[#A5B4FC] p-0; }
+  .markdown-body blockquote { @apply border-l-4 border-[#6366F1] pl-4 italic text-[#94A3B8] my-4; }
+  .markdown-body table { @apply w-full border-collapse mb-4; }
+  .markdown-body th { @apply text-left px-3 py-2 bg-[#1E293B] text-[#F1F5F9] font-semibold text-sm border border-[#334155]; }
+  .markdown-body td { @apply px-3 py-2 text-sm text-[#CBD5E1] border border-[#1E293B]; }
+  .markdown-body strong { @apply text-[#F1F5F9] font-semibold; }
+  .markdown-body a { @apply text-[#818CF8] hover:text-[#A5B4FC] underline; }
+  .markdown-body hr { @apply border-[#1E293B] my-6; }
+}
+
+/* ── Keyframe Animations ─────────────────────────────────────────────────────── */
+@layer utilities {
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .animate-fade-in-up { animation: fadeInUp 0.3s ease forwards; }
+  .animate-scale-in { animation: scaleIn 0.2s ease forwards; }
+
+  /* Heatmap cell colors — intensity scale */
+  .heat-0 { background: #151C2C; }
+  .heat-1 { background: rgba(99,102,241,0.2); }
+  .heat-2 { background: rgba(99,102,241,0.4); }
+  .heat-3 { background: rgba(99,102,241,0.65); }
+  .heat-4 { background: #6366F1; }
+
+  /* Urgency glow effect for urgent tasks */
+  .urgent-glow {
+    box-shadow: 0 0 0 1px rgba(239,68,68,0.3), 0 0 15px rgba(239,68,68,0.15);
+  }
+}
