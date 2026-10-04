@@ -3,10 +3,13 @@
 
 import axios from 'axios';
 
+const rawUrl = import.meta.env.VITE_API_URL || '';
+const formattedUrl = rawUrl.endsWith('/') ? rawUrl.slice(0, -1) : rawUrl;
+
 const api = axios.create({
-  baseURL: '/api', // Vite proxy handles forwarding to localhost:5000
+  baseURL: formattedUrl ? `${formattedUrl}/api` : '/api',
   headers: { 'Content-Type': 'application/json' },
-  timeout: 30000, // 30s timeout for AI endpoints which may be slow
+  timeout: 30000,
 });
 
 // ── Request Interceptor: Attach JWT token to every request ────────────────────
