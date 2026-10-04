@@ -2,8 +2,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Layers, Plus, BookOpen, RefreshCw, ArrowRight, ArrowLeft,
-  Trophy, X, Calendar, Search, Sparkles, CheckCircle2, ChevronRight, Zap, Trash2
+  Layers, Plus, BookOpen, RefreshCw, ArrowRight,
+  Trophy, X, Calendar, Search, Sparkles, CheckCircle2, Trash2
 } from 'lucide-react';
 import api from '../services/api';
 import FlashcardFlip from '../components/FlashcardFlip';
@@ -64,57 +64,67 @@ const CreateDeckModal = ({ onClose, onCreated }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-xs" onClick={onClose} />
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="glass-card w-full max-w-lg max-h-[85vh] flex flex-col z-10 border border-[#1E293B] shadow-2xl p-6"
+        className="bg-white rounded-3xl w-full max-w-lg max-h-[85vh] flex flex-col z-10 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 sm:p-7 select-none"
       >
-        <div className="flex items-center justify-between pb-4 border-b border-[#1E293B] mb-4">
-          <h2 className="text-base font-bold text-[#F1F5F9] flex items-center gap-2">
-            <Plus size={18} className="text-[#818CF8]" /> Create Custom Flashcard Deck
+        <div className="flex items-center justify-between pb-4 border-b-2 border-black mb-4">
+          <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-[#A3E635] flex items-center justify-center border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
+              <Plus size={18} className="stroke-[3] text-black" />
+            </div>
+            Create Custom Deck
           </h2>
-          <button onClick={onClose} className="text-[#64748B] hover:text-[#94A3B8]">
-            <X size={18} />
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-white hover:bg-red-50 flex items-center justify-center border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-colors cursor-pointer"
+          >
+            <X size={16} className="text-black stroke-[2.5]" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden space-y-4">
           <div>
-            <label className="block text-xs font-medium text-[#94A3B8] mb-1">Deck Title *</label>
+            <label className="block text-xs font-black text-slate-800 mb-1.5 uppercase tracking-wider">
+              Deck Title *
+            </label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Molecular Biology - Unit 1"
-              className="form-input text-sm"
+              className="form-input text-sm font-semibold"
               autoFocus
             />
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-3 pr-1">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-medium text-[#94A3B8]">Cards ({cards.length})</label>
+              <label className="block text-xs font-black text-slate-800 uppercase tracking-wider">
+                Cards ({cards.length})
+              </label>
               <button
                 type="button"
                 onClick={handleAddCard}
-                className="text-xs text-[#818CF8] hover:underline flex items-center gap-1"
+                className="text-xs font-black text-black bg-[#A3E635] hover:bg-[#8cee2b] px-2.5 py-1 rounded-lg border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] flex items-center gap-1 cursor-pointer"
               >
-                <Plus size={12} /> Add Card
+                <Plus size={13} className="stroke-[3]" /> Add Card
               </button>
             </div>
 
             {cards.map((c, i) => (
-              <div key={i} className="p-3 bg-[#0B0F17]/80 rounded-xl border border-[#1E293B] space-y-2">
+              <div key={i} className="p-3 bg-[#F9FAFB] rounded-2xl border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-mono font-bold text-[#64748B]">Card #{i + 1}</span>
+                  <span className="text-[11px] font-mono font-black text-slate-700">Card #{i + 1}</span>
                   {cards.length > 1 && (
                     <button
                       type="button"
                       onClick={() => handleRemoveCard(i)}
-                      className="text-[#64748B] hover:text-red-400 p-0.5"
+                      className="w-6 h-6 rounded-md bg-white hover:bg-red-50 text-red-600 border border-black flex items-center justify-center cursor-pointer"
                     >
-                      <X size={13} />
+                      <X size={13} className="stroke-[2.5]" />
                     </button>
                   )}
                 </div>
@@ -122,26 +132,26 @@ const CreateDeckModal = ({ onClose, onCreated }) => {
                   value={c.question}
                   onChange={(e) => handleCardChange(i, 'question', e.target.value)}
                   placeholder="Question / Front"
-                  className="form-input text-xs py-1.5"
+                  className="form-input text-xs py-1.5 font-semibold"
                 />
                 <input
                   value={c.answer}
                   onChange={(e) => handleCardChange(i, 'answer', e.target.value)}
                   placeholder="Answer / Back"
-                  className="form-input text-xs py-1.5"
+                  className="form-input text-xs py-1.5 font-semibold"
                 />
               </div>
             ))}
           </div>
 
-          <div className="flex gap-2.5 pt-2 border-t border-[#1E293B]">
-            <button type="button" onClick={onClose} className="btn-ghost flex-1 justify-center text-xs">
+          <div className="flex gap-3 pt-3 border-t-2 border-black/10">
+            <button type="button" onClick={onClose} className="btn-ghost flex-1 justify-center text-xs py-2.5 font-black">
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="btn-primary flex-1 justify-center text-xs"
+              className="btn-primary flex-1 justify-center text-xs py-2.5 font-black"
             >
               {submitting ? 'Creating...' : 'Create Deck'}
             </button>
@@ -183,9 +193,9 @@ const ReviewSession = ({ deck, onClose, onComplete }) => {
 
   if (cards.length === 0) {
     return (
-      <div className="py-12 text-center">
-        <p className="text-sm text-[#94A3B8]">This deck has no cards to review.</p>
-        <button onClick={onClose} className="btn-ghost mt-4">
+      <div className="py-12 text-center select-none">
+        <p className="text-sm font-bold text-slate-700">This deck has no cards to review.</p>
+        <button onClick={onClose} className="btn-ghost mt-4 font-black">
           Close
         </button>
       </div>
@@ -196,36 +206,36 @@ const ReviewSession = ({ deck, onClose, onComplete }) => {
     const total = cards.length;
 
     return (
-      <div className="flex flex-col items-center gap-6 py-10 text-center">
+      <div className="flex flex-col items-center gap-6 py-10 text-center select-none">
         <motion.div
           initial={{ scale: 0, rotate: -20 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', damping: 12 }}
-          className="w-20 h-20 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400"
+          className="w-20 h-20 rounded-3xl bg-amber-200 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center text-black"
         >
-          <Trophy size={40} />
+          <Trophy size={40} className="stroke-[2.5]" />
         </motion.div>
 
         <div>
-          <h3 className="text-2xl font-extrabold text-[#F1F5F9]">Review Session Complete!</h3>
-          <p className="text-xs text-[#64748B] mt-1">
+          <h3 className="text-2xl font-black text-slate-900">Review Session Complete!</h3>
+          <p className="text-xs font-bold text-slate-600 mt-1">
             You successfully reviewed {total} spaced repetition cards
           </p>
         </div>
 
         {/* Rating Breakdown */}
         <div className="grid grid-cols-3 gap-3 w-full max-w-sm">
-          <div className="glass-card p-3 rounded-xl border border-red-500/20 bg-red-950/10">
-            <p className="text-xl font-bold font-mono text-red-400">{results.hard}</p>
-            <p className="text-[11px] text-[#94A3B8] mt-0.5">Needs Review (1d)</p>
+          <div className="bg-red-100 p-3 rounded-2xl border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+            <p className="text-2xl font-black font-mono text-red-900">{results.hard}</p>
+            <p className="text-[11px] font-bold text-red-950 mt-0.5">Needs Review (1d)</p>
           </div>
-          <div className="glass-card p-3 rounded-xl border border-amber-500/20 bg-amber-950/10">
-            <p className="text-xl font-bold font-mono text-amber-400">{results.good}</p>
-            <p className="text-[11px] text-[#94A3B8] mt-0.5">Retained (6d)</p>
+          <div className="bg-amber-100 p-3 rounded-2xl border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+            <p className="text-2xl font-black font-mono text-amber-900">{results.good}</p>
+            <p className="text-[11px] font-bold text-amber-950 mt-0.5">Retained (6d)</p>
           </div>
-          <div className="glass-card p-3 rounded-xl border border-emerald-500/20 bg-emerald-950/10">
-            <p className="text-xl font-bold font-mono text-emerald-400">{results.easy}</p>
-            <p className="text-[11px] text-[#94A3B8] mt-0.5">Mastered (14d+)</p>
+          <div className="bg-[#DCFCE7] p-3 rounded-2xl border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+            <p className="text-2xl font-black font-mono text-emerald-900">{results.easy}</p>
+            <p className="text-[11px] font-bold text-emerald-950 mt-0.5">Mastered (14d+)</p>
           </div>
         </div>
 
@@ -236,11 +246,11 @@ const ReviewSession = ({ deck, onClose, onComplete }) => {
               setDone(false);
               setResults({ hard: 0, good: 0, easy: 0 });
             }}
-            className="btn-ghost text-xs py-2 px-4"
+            className="btn-ghost text-xs py-2 px-4 font-black"
           >
-            <RefreshCw size={14} /> Review Again
+            <RefreshCw size={14} className="stroke-[2.5]" /> Review Again
           </button>
-          <button onClick={onComplete} className="btn-primary text-xs py-2 px-5">
+          <button onClick={onComplete} className="btn-primary text-xs py-2 px-5 font-black">
             Done
           </button>
         </div>
@@ -249,23 +259,26 @@ const ReviewSession = ({ deck, onClose, onComplete }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 select-none">
       {/* Session Progress Header */}
       <div>
-        <div className="flex items-center justify-between text-xs text-[#94A3B8] mb-2">
-          <span className="font-medium">
+        <div className="flex items-center justify-between text-xs font-black text-slate-800 mb-2">
+          <span>
             Card {currentIdx + 1} of {cards.length}
           </span>
           <div className="flex items-center gap-3">
-            <span className="text-[11px] text-[#64748B]">Click card to flip</span>
-            <button onClick={onClose} className="text-[#64748B] hover:text-[#F1F5F9]">
-              <X size={17} />
+            <span className="text-[11px] font-bold text-slate-500">Click card to flip</span>
+            <button
+              onClick={onClose}
+              className="w-7 h-7 rounded-full bg-white hover:bg-red-50 flex items-center justify-center border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
+            >
+              <X size={14} className="stroke-[2.5]" />
             </button>
           </div>
         </div>
-        <div className="bg-[#1E293B] rounded-full h-1.5 overflow-hidden">
+        <div className="bg-[#E5E7EB] rounded-full h-2 overflow-hidden border border-black">
           <motion.div
-            className="h-full bg-[#6366F1] rounded-full"
+            className="h-full bg-[#A3E635] rounded-full"
             animate={{ width: `${((currentIdx + 1) / cards.length) * 100}%` }}
             transition={{ duration: 0.3 }}
           />
@@ -300,66 +313,67 @@ const DeckCard = ({ deck, onReview, onDelete }) => {
   return (
     <motion.div
       whileHover={{ y: -3 }}
-      className="glass-card p-5 border border-[#1E293B] hover:border-[#334155] flex flex-col justify-between transition-all group relative"
+      className="bg-white rounded-3xl p-5 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col justify-between transition-all group relative select-none"
     >
       <div>
         <div className="flex items-start justify-between gap-2 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-[#6366F1]/15 border border-[#6366F1]/30 flex items-center justify-center text-[#818CF8]">
-            <Layers size={18} />
+          <div className="w-10 h-10 rounded-2xl bg-amber-200 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center text-black">
+            <Layers size={19} className="stroke-[2.5]" />
           </div>
           <div className="flex items-center gap-1.5">
             {dueCount > 0 ? (
-              <span className="text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                <Calendar size={11} /> {dueCount} due
+              <span className="text-[11px] font-black bg-amber-200 text-amber-950 border border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <Calendar size={11} className="stroke-[2.5]" /> {dueCount} due
               </span>
             ) : (
-              <span className="text-[11px] font-medium bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full">
+              <span className="text-[11px] font-black bg-[#DCFCE7] text-emerald-950 border border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] px-2.5 py-0.5 rounded-full">
                 Up to date
               </span>
             )}
             <button
               onClick={() => onDelete(deck._id)}
-              className="p-1 rounded text-[#475569] hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="w-7 h-7 rounded-lg bg-white hover:bg-red-50 text-gray-500 hover:text-red-600 border border-black flex items-center justify-center transition-colors cursor-pointer shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] opacity-0 group-hover:opacity-100"
               title="Delete deck"
             >
-              <Trash2 size={13} />
+              <Trash2 size={13} className="stroke-[2.5]" />
             </button>
           </div>
         </div>
 
-        <h3 className="font-bold text-[#F1F5F9] text-base mb-1 group-hover:text-white line-clamp-1">
+        <h3 className="font-black text-slate-900 text-base mb-1 line-clamp-1">
           {deck.title}
         </h3>
 
         {deck.noteRef && (
-          <p className="text-xs text-[#64748B] flex items-center gap-1.5 mb-2 truncate">
+          <p className="text-xs text-slate-600 font-bold flex items-center gap-1.5 mb-2 truncate">
             <span>{deck.noteRef.emoji || '📝'}</span>
             <span className="truncate">From note: {deck.noteRef.title}</span>
           </p>
         )}
 
-        <p className="text-xs text-[#94A3B8]">
-          <span className="font-mono font-bold text-[#F1F5F9]">{totalCards}</span> active flashcards
+        <p className="text-xs text-slate-600 font-bold">
+          <span className="font-mono font-black text-slate-900">{totalCards}</span> active flashcards
         </p>
       </div>
 
-      <div className="mt-5 pt-3 border-t border-[#1E293B]/70">
+      <div className="mt-5 pt-3.5 border-t-2 border-black/10">
         <button
           onClick={() => onReview(deck)}
-          className={`w-full text-xs font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all ${
+          className={`w-full text-xs font-black py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all border-2 border-black cursor-pointer ${
             dueCount > 0
-              ? 'btn-primary'
-              : 'bg-[#1E293B] hover:bg-[#334155] text-[#F1F5F9]'
+              ? 'bg-[#A3E635] hover:bg-[#8cee2b] text-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-0 active:shadow-none'
+              : 'bg-white hover:bg-gray-100 text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-0 active:shadow-none'
           }`}
         >
           {dueCount > 0 ? `Review ${dueCount} Due Cards` : 'Study Deck'}
-          <ArrowRight size={13} />
+          <ArrowRight size={13} className="stroke-[3]" />
         </button>
       </div>
     </motion.div>
   );
 };
 
+// ── Main Flashcard Page Component ─────────────────────────────────────────────
 export default function FlashcardPage() {
   const [decks, setDecks] = useState([]);
   const [activeDeck, setActiveDeck] = useState(null);
@@ -414,78 +428,81 @@ export default function FlashcardPage() {
   );
 
   return (
-    <div className="p-6 md:p-8 max-w-6xl mx-auto space-y-8 pb-28 md:pb-12">
-      {/* ── Top Header ─────────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1E293B]/80 pb-6">
+    <div className="p-6 md:p-8 max-w-6xl mx-auto space-y-8 pb-28 md:pb-12 select-none">
+      {/* ── Top Header: Prominent Black Title & Crisp White Search Bar ──────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-black pb-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#F1F5F9] flex items-center gap-2.5 tracking-tight">
-            <Layers size={26} className="text-[#F59E0B]" />
+          <h1 className="text-slate-900 font-black text-3xl flex items-center gap-3 tracking-tight">
+            <div className="w-10 h-10 rounded-2xl bg-amber-200 flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+              <Layers size={22} className="text-black stroke-[3]" />
+            </div>
             Flashcard Decks
           </h1>
-          <p className="text-xs md:text-sm text-[#64748B] mt-1">
+          <p className="text-slate-700 font-medium text-xs md:text-sm mt-1.5">
             Supercharged active recall powered by the SM-2 Spaced Repetition Algorithm
           </p>
         </div>
 
-        {/* Quick Search & Actions */}
-        <div className="flex items-center gap-3">
+        {/* Search Bar & Actions */}
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Crisp White Search Input with 2px Black Border & Drop Shadow */}
           <div className="relative">
-            <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#475569]" />
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-black stroke-[2.5]" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search decks..."
-              className="bg-[#0D1220] border border-[#1E293B] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#F1F5F9] placeholder-[#475569] outline-none focus:border-[#6366F1]"
+              className="bg-white border-2 border-black rounded-xl pl-9 pr-3.5 py-2 text-xs font-bold text-black placeholder:text-slate-500 outline-none shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
             />
           </div>
 
           <button
             onClick={() => setShowCreateModal(true)}
-            className="btn-ghost text-xs py-2 px-3"
+            className="btn-ghost text-xs py-2 px-3 font-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
           >
-            <Plus size={14} /> New Deck
+            <Plus size={14} className="stroke-[3]" /> New Deck
           </button>
 
           <button
             onClick={() => (window.location.href = '/notes')}
-            className="btn-primary text-xs py-2 px-3.5"
+            className="btn-primary text-xs py-2 px-3.5 font-black border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
             title="Generate flashcards from a note"
           >
-            <Sparkles size={14} /> AI Generate
+            <Sparkles size={14} className="stroke-[3]" /> AI Generate
           </button>
         </div>
       </div>
 
-      {/* ── Daily Summary Card ─────────────────────────────────────────────── */}
+      {/* ── Daily Summary Cards: Vibrant Pastel Neo-Brutalist Badges ────────── */}
       {decks.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="glass-card p-4 border border-[#1E293B] flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center text-amber-400">
-              <Calendar size={18} />
+          <div className="bg-amber-100 p-4.5 rounded-3xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center text-black">
+              <Calendar size={20} className="stroke-[2.5]" />
             </div>
             <div>
-              <p className="text-xl font-bold font-mono text-[#F1F5F9]">{totalDueCount}</p>
-              <p className="text-xs text-[#64748B]">Cards Due for Review Today</p>
+              <p className="text-2xl font-black font-mono text-black">{totalDueCount}</p>
+              <p className="text-xs font-black text-black/75">Cards Due for Review Today</p>
             </div>
           </div>
 
-          <div className="glass-card p-4 border border-[#1E293B] flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/15 flex items-center justify-center text-[#818CF8]">
-              <Layers size={18} />
+          <div className="bg-blue-100 p-4.5 rounded-3xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center text-black">
+              <Layers size={20} className="stroke-[2.5]" />
             </div>
             <div>
-              <p className="text-xl font-bold font-mono text-[#F1F5F9]">{decks.length}</p>
-              <p className="text-xs text-[#64748B]">Total Created Decks</p>
+              <p className="text-2xl font-black font-mono text-black">{decks.length}</p>
+              <p className="text-xs font-black text-black/75">Total Created Decks</p>
             </div>
           </div>
 
-          <div className="glass-card p-4 border border-[#1E293B] flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400">
-              <CheckCircle2 size={18} />
+          <div className="bg-lime-200 p-4.5 rounded-3xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center text-black">
+              <CheckCircle2 size={20} className="stroke-[2.5]" />
             </div>
             <div>
-              <p className="text-xl font-bold font-mono text-[#F1F5F9]">{totalCardsCount}</p>
-              <p className="text-xs text-[#64748B]">Total Flashcards in Library</p>
+              <p className="text-2xl font-black font-mono text-black">{totalCardsCount}</p>
+              <p className="text-xs font-black text-black/75">Total Flashcards in Library</p>
             </div>
           </div>
         </div>
@@ -498,24 +515,26 @@ export default function FlashcardPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-black/45 backdrop-blur-xs flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.95 }}
-              className="glass-card w-full max-w-xl p-6 md:p-8 border border-[#1E293B] shadow-2xl relative"
+              className="bg-white rounded-3xl w-full max-w-xl p-6 md:p-8 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative select-none"
             >
-              <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#1E293B]">
-                <h2 className="text-sm font-bold text-[#F1F5F9] flex items-center gap-2">
-                  <Layers size={16} className="text-[#F59E0B]" />
+              <div className="flex items-center justify-between mb-5 pb-3.5 border-b-2 border-black">
+                <h2 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-amber-200 border border-black flex items-center justify-center">
+                    <Layers size={15} className="stroke-[2.5] text-black" />
+                  </div>
                   {activeDeck.title}
                 </h2>
                 <button
                   onClick={() => setActiveDeck(null)}
-                  className="text-[#64748B] hover:text-[#94A3B8]"
+                  className="w-8 h-8 rounded-full bg-white hover:bg-red-50 flex items-center justify-center border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-colors cursor-pointer"
                 >
-                  <X size={18} />
+                  <X size={16} className="text-black stroke-[2.5]" />
                 </button>
               </div>
 
@@ -534,34 +553,38 @@ export default function FlashcardPage() {
 
       {/* ── Decks Grid ─────────────────────────────────────────────────────── */}
       {loading ? (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="skeleton h-56 rounded-2xl" />
+            <div key={i} className="skeleton h-56 rounded-3xl" />
           ))}
         </div>
       ) : decks.length === 0 ? (
-        <div className="glass-card p-12 text-center max-w-md mx-auto border border-[#1E293B]">
-          <div className="w-16 h-16 rounded-2xl bg-[#1E293B] flex items-center justify-center mx-auto mb-4 text-[#475569]">
-            <Layers size={32} />
+        /* ── Empty State Card with Bright Lime-Green Sticker Badge & High-Contrast Typography ── */
+        <div className="bg-white rounded-3xl p-10 sm:p-12 text-center max-w-md mx-auto border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+          <div className="bg-lime-400 border-2 border-black rounded-2xl p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] inline-flex items-center justify-center mx-auto mb-5 text-black">
+            <Layers size={32} className="stroke-[2.5] text-black" />
           </div>
-          <h3 className="text-lg font-bold text-[#F1F5F9]">No flashcard decks yet</h3>
-          <p className="text-xs text-[#64748B] mt-2 leading-relaxed">
+          <h3 className="text-black font-black text-2xl tracking-tight">No flashcard decks yet</h3>
+          <p className="text-slate-700 font-semibold text-xs md:text-sm mt-2 mb-6 leading-relaxed">
             Create a custom deck manually or convert any study note in the Note Studio into flashcards!
           </p>
-          <div className="flex gap-2.5 justify-center mt-6">
-            <button onClick={() => setShowCreateModal(true)} className="btn-ghost text-xs">
-              <Plus size={14} /> New Deck
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="btn-ghost text-xs font-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
+            >
+              <Plus size={14} className="stroke-[3]" /> New Deck
             </button>
             <button
               onClick={() => (window.location.href = '/notes')}
-              className="btn-primary text-xs"
+              className="btn-primary text-xs font-black border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
             >
-              <BookOpen size={14} /> Note Studio
+              <BookOpen size={14} className="stroke-[2.5]" /> Note Studio
             </button>
           </div>
         </div>
       ) : (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredDecks.map((deck) => (
             <DeckCard
               key={deck._id}

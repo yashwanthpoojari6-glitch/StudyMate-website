@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Flame, Clock, CheckSquare, BookOpen, ArrowRight, Calendar,
-  Plus, Zap, FileText, Layers, CheckCircle2, AlertCircle, X,
+  Plus, Zap, FileText, Layers, X,
   TrendingUp, Sparkles, Award
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -21,39 +21,44 @@ const getGreeting = () => {
   return { text: 'Burning the midnight oil', emoji: '✨' };
 };
 
-const StatCard = ({ icon: Icon, label, value, color, suffix = '', trend }) => (
+// Neo-brutalist Stat Card with vibrant pastel/mint/lime green background, 2px black border, and brutalist drop shadows
+const StatCard = ({ icon: Icon, label, value, bgColor = 'bg-lime-200', suffix = '', trend }) => (
   <motion.div
-    whileHover={{ y: -3, transition: { duration: 0.2 } }}
-    className="glass-card p-5 relative overflow-hidden group border border-[#1E293B] hover:border-[#334155] transition-all"
+    whileHover={{ y: -3, transition: { duration: 0.15 } }}
+    className={`${bgColor} rounded-2xl p-5 relative overflow-hidden border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all`}
   >
-    <div
-      className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-10 pointer-events-none transition-opacity group-hover:opacity-25"
-      style={{ background: color }}
-    />
-    <div className="flex items-center justify-between mb-3 relative z-10">
+    {/* Decorative 8-point vector starburst accent */}
+    <svg className="absolute -top-1 -right-1 opacity-20 pointer-events-none" width="38" height="38" viewBox="0 0 36 36">
+      <path
+        d="M18 0 L20 14 L36 18 L20 22 L18 36 L16 22 L0 18 L16 14 Z"
+        fill="#000000"
+        stroke="#000000"
+        strokeWidth="1.5"
+      />
+    </svg>
+
+    <div className="flex items-center justify-between mb-3.5 relative z-10">
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center shadow-inner"
-        style={{ background: `${color}18`, border: `1px solid ${color}30` }}
+        className="w-11 h-11 rounded-xl bg-white flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
       >
-        <Icon size={19} style={{ color }} />
+        <Icon size={20} className="stroke-[2.5] text-black" />
       </div>
       {trend && (
-        <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
-          <TrendingUp size={11} /> {trend}
+        <span className="text-[11px] font-black text-black bg-white px-2.5 py-1 rounded-full flex items-center gap-1 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+          <TrendingUp size={12} className="stroke-[3]" /> {trend}
         </span>
       )}
     </div>
-    <div className="relative z-10">
-      <p className="text-2xl lg:text-3xl font-bold font-mono text-[#F1F5F9] tracking-tight">
-        {value}
-        {suffix && <span className="text-sm font-normal text-[#64748B] ml-1">{suffix}</span>}
-      </p>
-      <p className="text-xs font-medium text-[#94A3B8] mt-1">{label}</p>
-    </div>
+
+    <p className="text-3xl font-black text-black tracking-tight">
+      {value}
+      {suffix && <span className="text-sm font-black text-black/70 ml-1.5">{suffix}</span>}
+    </p>
+    <p className="text-xs font-black text-black/80 mt-1 uppercase tracking-wider">{label}</p>
   </motion.div>
 );
 
-// Quick Task creation modal
+// Quick Task Modal
 const QuickTaskModal = ({ subjects, onClose, onCreated }) => {
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState('important');
@@ -87,67 +92,78 @@ const QuickTaskModal = ({ subjects, onClose, onCreated }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-xs" onClick={onClose} />
       <motion.div
-        initial={{ scale: 0.95, opacity: 0 }}
+        initial={{ scale: 0.94, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.95, opacity: 0 }}
-        className="glass-card w-full max-w-md z-10 p-6 border border-[#1E293B] shadow-2xl"
+        exit={{ scale: 0.94, opacity: 0 }}
+        className="bg-white rounded-3xl w-full max-w-md z-10 p-6 sm:p-7 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative"
       >
         <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#6366F1]/20 flex items-center justify-center text-[#818CF8]">
-              <Plus size={18} />
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#A3E635] flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+              <Plus size={20} className="text-black stroke-[3]" />
             </div>
-            <h2 className="text-base font-bold text-[#F1F5F9]">Quick Add Task</h2>
+            <h2 className="text-lg font-black text-[#111827]">Quick Add Task</h2>
           </div>
-          <button onClick={onClose} className="text-[#64748B] hover:text-[#94A3B8]">
-            <X size={18} />
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-white hover:bg-red-50 flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-colors cursor-pointer"
+          >
+            <X size={16} className="text-black stroke-[2.5]" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-[#94A3B8] mb-1">Task Title *</label>
+            <label className="block text-xs font-black text-[#374151] mb-1.5 uppercase tracking-wider">
+              Task Title *
+            </label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Finish Calculus Problem Set 4"
-              className="form-input text-sm"
+              className="form-input text-sm font-semibold"
               autoFocus
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-[#94A3B8] mb-1">Priority</label>
+              <label className="block text-xs font-black text-[#374151] mb-1.5 uppercase tracking-wider">
+                Priority
+              </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="form-input text-sm"
+                className="form-input text-sm font-bold"
               >
                 <option value="chill">Chill (Low)</option>
-                <option value="important">Important (Medium)</option>
+                <option value="important">Important (Med)</option>
                 <option value="urgent">Urgent (High)</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#94A3B8] mb-1">Due Date</label>
+              <label className="block text-xs font-black text-[#374151] mb-1.5 uppercase tracking-wider">
+                Due Date
+              </label>
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="form-input text-sm"
+                className="form-input text-sm font-semibold"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-[#94A3B8] mb-1">Course / Subject</label>
+            <label className="block text-xs font-black text-[#374151] mb-1.5 uppercase tracking-wider">
+              Course / Subject
+            </label>
             <select
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="form-input text-sm"
+              className="form-input text-sm font-semibold"
             >
               <option value="">No subject linked</option>
               {subjects.map((s) => (
@@ -158,14 +174,18 @@ const QuickTaskModal = ({ subjects, onClose, onCreated }) => {
             </select>
           </div>
 
-          <div className="flex gap-2.5 pt-2">
-            <button type="button" onClick={onClose} className="btn-ghost flex-1 justify-center text-xs">
+          <div className="flex gap-3 pt-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-ghost flex-1 justify-center text-xs py-2.5 font-black"
+            >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="btn-primary flex-1 justify-center text-xs"
+              className="btn-primary flex-1 justify-center text-xs py-2.5 font-black"
             >
               {submitting ? 'Creating...' : 'Create Task'}
             </button>
@@ -201,7 +221,7 @@ export default function Dashboard() {
       setSubjects(subjectsRes.data?.data || []);
       setAssignments((assignmentsRes.data?.data || []).slice(0, 5));
     } catch {
-      // Fallback grace
+      // Graceful fallback
     } finally {
       setLoading(false);
     }
@@ -226,98 +246,107 @@ export default function Dashboard() {
   const todayMinutes = heatmapData.find((d) => d.date === todayKey)?.totalMinutes || 0;
   const upcomingExams = subjects.filter((s) => s.examDate).slice(0, 3);
 
+  // Restored vibrant pastel/mint/lime green background classes
   const quickActions = [
     {
       title: 'Focus Timer',
       desc: '25m Pomodoro session',
       icon: Zap,
-      color: '#6366F1',
-      bgGlow: 'from-indigo-500/15 to-purple-500/5',
       action: () => navigate('/focus'),
+      bgClass: 'bg-lime-200',
+      badge: 'Deep Work',
     },
     {
       title: 'New Note',
       desc: 'Markdown + AI Copilot',
       icon: FileText,
-      color: '#38BDF8',
-      bgGlow: 'from-sky-500/15 to-blue-500/5',
       action: () => navigate('/notes'),
+      bgClass: 'bg-emerald-100',
+      badge: 'Editor',
     },
     {
       title: 'Quick Task',
       desc: 'Add to Kanban board',
       icon: Plus,
-      color: '#10B981',
-      bgGlow: 'from-emerald-500/15 to-teal-500/5',
       action: () => setShowQuickTask(true),
+      bgClass: 'bg-green-200',
+      badge: 'Action',
     },
     {
       title: 'Flashcards',
       desc: 'Spaced repetition deck',
       icon: Layers,
-      color: '#F59E0B',
-      bgGlow: 'from-amber-500/15 to-yellow-500/5',
       action: () => navigate('/flashcards'),
+      bgClass: 'bg-teal-100',
+      badge: 'Recall',
     },
   ];
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 pb-28 md:pb-12">
-      {/* ── Greeting Header ─────────────────────────────────────────────────── */}
+      {/* Header Banner */}
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1E293B]/70 pb-6"
+        transition={{ duration: 0.3 }}
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b-2 border-black"
       >
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">{greeting.emoji}</span>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-[#F1F5F9] tracking-tight">
+          <div className="flex items-center gap-2.5">
+            <span className="text-3xl">{greeting.emoji}</span>
+            <h1 className="text-2xl md:text-3xl font-black text-[#111827] tracking-tight">
               {greeting.text}, {user?.name?.split(' ')[0] || 'Scholar'}!
             </h1>
           </div>
-          <p className="text-xs md:text-sm text-[#64748B] mt-1.5 flex items-center gap-2">
-            <Calendar size={13} className="text-[#475569]" />
+          <p className="text-xs md:text-sm text-[#4B5563] mt-1.5 flex items-center gap-2 font-bold">
+            <Calendar size={14} className="text-black stroke-[2.5]" />
             {new Date().toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',
               month: 'long',
               day: 'numeric',
             })}
-            <span className="text-[#334155]">•</span>
-            <span className="text-[#818CF8] font-medium flex items-center gap-1">
-              <Sparkles size={12} /> Academic Copilot Active
+            <span className="text-black font-black">•</span>
+            <span className="text-black bg-[#A3E635] px-2.5 py-0.5 rounded-full border-2 border-black text-xs font-black flex items-center gap-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+              <Sparkles size={11} className="stroke-[2.5]" /> Academic Copilot Active
             </span>
           </p>
         </div>
 
-        {/* Streak & Level Badges */}
+        {/* Gamified Badges */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/25 rounded-full shadow-sm">
-            <Flame size={16} className="text-amber-400 animate-pulse" />
-            <span className="text-amber-400 font-bold font-mono text-sm">
-              {stats?.streak?.count || user?.streak?.count || 1}
-            </span>
-            <span className="text-amber-300/80 text-xs font-medium">Day Streak</span>
+          <div className="token-badge">
+            <Flame size={18} className="text-[#F59E0B] stroke-[2.5]" />
+            <span className="font-black text-base">{stats?.streak?.count || user?.streak?.count || 1}</span>
+            <span className="font-bold text-[#4B5563] text-xs">Day Streak</span>
           </div>
-
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#1E293B]/60 border border-[#334155]/60 rounded-full text-xs text-[#94A3B8]">
-            <Award size={14} className="text-[#6366F1]" />
-            <span>Scholar Level {Math.floor((stats?.totalFocusMinutes || 0) / 120) + 1}</span>
+          <div className="token-badge hidden sm:flex">
+            <Award size={16} className="text-emerald-700 stroke-[2.5]" />
+            <span className="font-black text-xs">Level {Math.floor((stats?.totalFocusMinutes || 0) / 120) + 1}</span>
           </div>
         </div>
       </motion.div>
 
-      {/* ── Quick Actions Row ──────────────────────────────────────────────── */}
+      {/* Quick Launch Action Cards — Vibrant pastel/mint/lime green backgrounds with 2px solid black borders & brutalist drop shadows */}
       <div>
-        <div className="flex items-center justify-between mb-3 px-1">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-[#64748B]">
+        <div className="flex items-center justify-between mb-3.5 px-1">
+          <h2 className="text-xs font-black uppercase tracking-widest text-[#111827] flex items-center gap-2">
+            <svg width="15" height="15" viewBox="0 0 15 15">
+              <path
+                d="M7.5 0 L8.5 6.5 L15 7.5 L8.5 8.5 L7.5 15 L6.5 8.5 L0 7.5 L6.5 6.5 Z"
+                fill="#A3E635"
+                stroke="#000"
+                strokeWidth="1"
+              />
+            </svg>
             Quick Launch Actions
           </h2>
-          <span className="text-[11px] text-[#475569]">Direct Shortcuts</span>
+          <span className="text-[11px] font-black text-[#6B7280] uppercase tracking-wider">
+            Direct Shortcuts
+          </span>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {quickActions.map((qa, idx) => (
             <motion.button
               key={qa.title}
@@ -325,31 +354,49 @@ export default function Dashboard() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
-              whileHover={{ scale: 1.02, y: -2 }}
+              whileHover={{ y: -3 }}
               whileTap={{ scale: 0.98 }}
-              className={`glass-card p-4 text-left border border-[#1E293B] hover:border-[#334155] bg-gradient-to-br ${qa.bgGlow} transition-all relative overflow-hidden group`}
+              className={`${qa.bgClass} rounded-2xl p-4 text-left cursor-pointer border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all relative overflow-hidden group`}
             >
-              <div className="flex items-center justify-between mb-2">
+              {/* Corner Starburst Vector Sticker */}
+              <svg className="absolute -top-1 -right-1 opacity-20 pointer-events-none" width="34" height="34" viewBox="0 0 34 34">
+                <path
+                  d="M17 0 L19 13 L34 17 L19 21 L17 34 L15 21 L0 17 L15 13 Z"
+                  fill="#000"
+                  stroke="#000"
+                  strokeWidth="1"
+                />
+              </svg>
+
+              <div className="flex items-center justify-between mb-3 relative z-10">
                 <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110"
-                  style={{ background: `${qa.color}25` }}
+                  className="w-10 h-10 rounded-xl bg-white flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                 >
-                  <qa.icon size={18} style={{ color: qa.color }} />
+                  <qa.icon size={19} className="text-black stroke-[2.5]" />
                 </div>
-                <ArrowRight size={14} className="text-[#475569] group-hover:text-[#F1F5F9] group-hover:translate-x-1 transition-all" />
+                <span className="text-[10px] font-black bg-white text-black px-2 py-0.5 rounded-md border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
+                  {qa.badge}
+                </span>
               </div>
-              <p className="text-sm font-bold text-[#F1F5F9] group-hover:text-white">{qa.title}</p>
-              <p className="text-[11px] text-[#64748B] mt-0.5">{qa.desc}</p>
+
+              <p className="text-sm font-black text-black">{qa.title}</p>
+              <p className="text-[11px] font-bold text-black/75 mt-0.5 line-clamp-1">{qa.desc}</p>
+
+              <div className="flex justify-end mt-3">
+                <div className="w-7 h-7 rounded-lg bg-white border-2 border-black flex items-center justify-center transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group-hover:translate-x-0.5">
+                  <ArrowRight size={14} className="text-black stroke-[3]" />
+                </div>
+              </div>
             </motion.button>
           ))}
         </div>
       </div>
 
-      {/* ── Stats Grid ──────────────────────────────────────────────────────── */}
+      {/* Stats Grid — Restored vibrant pastel/mint/lime green background colors with 2px solid black borders & drop shadows */}
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="skeleton h-28 rounded-xl" />
+            <div key={i} className="skeleton h-28 rounded-2xl" />
           ))}
         </div>
       ) : (
@@ -358,7 +405,7 @@ export default function Dashboard() {
             icon={Flame}
             label="Current Streak"
             value={stats?.streak?.count || 1}
-            color="#F59E0B"
+            bgColor="bg-lime-200"
             suffix="days"
             trend="Active"
           />
@@ -366,7 +413,7 @@ export default function Dashboard() {
             icon={Clock}
             label="Today's Focus Time"
             value={todayMinutes}
-            color="#6366F1"
+            bgColor="bg-emerald-100"
             suffix="min"
             trend={todayMinutes > 0 ? '+Today' : undefined}
           />
@@ -374,123 +421,118 @@ export default function Dashboard() {
             icon={Clock}
             label="Weekly Deep Work"
             value={((stats?.weeklyMinutes || 0) / 60).toFixed(1)}
-            color="#10B981"
+            bgColor="bg-green-200"
             suffix="hrs"
           />
           <StatCard
             icon={CheckSquare}
             label="Tasks Completed"
             value={stats?.completedTasks || 0}
-            color="#38BDF8"
+            bgColor="bg-lime-300"
             suffix="done"
           />
         </div>
       )}
 
-      {/* ── Annual Activity Heatmap ────────────────────────────────────────── */}
+      {/* Heatmap Activity Container */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="glass-card p-6 border border-[#1E293B]"
+        className="bg-white rounded-2xl p-6 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
-          <h2 className="text-base font-bold text-[#F1F5F9] flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#6366F1] shadow-lg shadow-indigo-500/50" />
+          <h2 className="text-base font-black text-[#111827] flex items-center gap-2.5">
+            <span
+              className="w-3.5 h-3.5 rounded-full bg-[#A3E635] inline-block border-2 border-black shadow-[1px_1px_0px_#000]"
+            />
             Study Activity Heatmap
-            <span className="text-xs text-[#64748B] font-normal font-sans">(Past 365 Days)</span>
+            <span className="text-xs text-[#6B7280] font-bold">(Past 365 Days)</span>
           </h2>
           <Link
             to="/focus"
-            className="text-xs font-semibold text-[#818CF8] hover:text-[#A5B4FC] flex items-center gap-1 transition-colors"
+            className="text-xs font-black text-black bg-[#A3E635] hover:bg-[#8cee2b] px-3.5 py-1.5 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex items-center gap-1.5 transition-all cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
           >
-            Launch Focus Session <ArrowRight size={13} />
+            Launch Focus Session <ArrowRight size={13} className="stroke-[3]" />
           </Link>
         </div>
-
-        {loading ? (
-          <div className="skeleton h-32 rounded-lg" />
-        ) : (
-          <Heatmap data={heatmapData} />
-        )}
+        {loading ? <div className="skeleton h-32 rounded-xl" /> : <Heatmap data={heatmapData} />}
       </motion.div>
 
-      {/* ── Bottom Section: Exams & Pending Tasks ──────────────────────────── */}
+      {/* Exams & Priority Tasks Grid */}
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Upcoming Exams Countdown */}
+        {/* Upcoming Exams Card */}
         <motion.div
           initial={{ opacity: 0, x: -16 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="glass-card p-6 border border-[#1E293B] flex flex-col"
+          className="bg-white rounded-2xl p-6 flex flex-col border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
         >
-          <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#1E293B]">
-            <h2 className="text-base font-bold text-[#F1F5F9] flex items-center gap-2">
-              <Calendar size={17} className="text-[#F59E0B]" />
-              Upcoming Exam Dates
+          <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-black">
+            <h2 className="text-base font-black text-[#111827] flex items-center gap-2">
+              <Calendar size={18} className="text-[#F59E0B] stroke-[2.5]" /> Upcoming Exam Dates
             </h2>
             <Link
               to="/subjects"
-              className="text-xs text-[#818CF8] hover:underline flex items-center gap-1 font-medium"
+              className="text-xs text-[#15803D] hover:underline flex items-center gap-1 font-black"
             >
-              All Subjects <ArrowRight size={13} />
+              All Subjects <ArrowRight size={13} className="stroke-[3]" />
             </Link>
           </div>
 
           {loading ? (
             <div className="space-y-3">
               {[...Array(2)].map((_, i) => (
-                <div key={i} className="skeleton h-16 rounded-lg" />
+                <div key={i} className="skeleton h-16 rounded-xl" />
               ))}
             </div>
           ) : upcomingExams.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center py-8 text-center">
-              <BookOpen size={36} className="text-[#1E293B] mb-2.5" />
-              <p className="text-sm font-medium text-[#64748B]">No exams currently scheduled</p>
+              <div className="w-12 h-12 rounded-2xl bg-[#F0FDF4] border-2 border-black flex items-center justify-center mb-3 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                <BookOpen size={24} className="text-[#15803D] stroke-[2.5]" />
+              </div>
+              <p className="text-sm font-black text-[#111827]">No exams currently scheduled</p>
+              <p className="text-xs font-bold text-[#6B7280] mt-1">Keep courses up to date to track countdowns</p>
               <Link
                 to="/subjects"
-                className="btn-ghost text-xs mt-3 inline-flex items-center gap-1.5 py-1.5 px-3"
+                className="btn-ghost text-xs mt-3.5 inline-flex items-center gap-1.5 py-1.5 px-3.5"
               >
-                <Plus size={13} /> Add Course & Exam Date
+                <Plus size={13} className="stroke-[3]" /> Add Course &amp; Exam Date
               </Link>
             </div>
           ) : (
             <div className="space-y-3 flex-1">
               {upcomingExams.map((subject) => {
                 const days = subject.daysUntilExam;
-                const urgencyColor =
-                  days <= 5 ? '#EF4444' : days <= 14 ? '#F59E0B' : '#10B981';
-
+                const urgencyColor = days <= 5 ? '#EF4444' : days <= 14 ? '#F59E0B' : '#15803D';
                 return (
                   <div
                     key={subject._id}
-                    className="flex items-center gap-3.5 p-3.5 bg-[#0B0F17]/70 rounded-xl border border-[#1E293B] hover:border-[#334155] transition-all"
+                    className="flex items-center gap-3.5 p-3.5 rounded-xl bg-white hover:bg-[#F0FDF4] transition-all border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                   >
                     <div
-                      className="w-2.5 h-12 rounded-full flex-shrink-0"
-                      style={{ background: subject.colorTag || '#6366F1' }}
+                      className="w-3 h-12 rounded-full flex-shrink-0 border-2 border-black"
+                      style={{ background: subject.colorTag || '#A3E635' }}
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-bold text-[#F1F5F9] truncate">
-                          {subject.title}
-                        </p>
+                        <p className="text-sm font-black text-[#111827] truncate">{subject.title}</p>
                         {subject.code && (
-                          <span className="text-[10px] font-mono text-[#64748B] bg-[#1E293B] px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] font-black text-[#111827] bg-[#F0FDF4] px-1.5 py-0.5 rounded border border-black">
                             {subject.code}
                           </span>
                         )}
                       </div>
-                      <div className="mt-2 bg-[#1E293B] rounded-full h-1.5 overflow-hidden">
+                      <div className="mt-2 bg-[#E5E7EB] rounded-full h-2 overflow-hidden border border-black">
                         <div
                           className="h-full rounded-full transition-all duration-500"
                           style={{
                             width: `${subject.progress || 0}%`,
-                            background: subject.colorTag || '#6366F1',
+                            background: subject.colorTag || '#A3E635',
                           }}
                         />
                       </div>
-                      <div className="flex items-center justify-between text-[11px] text-[#64748B] mt-1.5">
+                      <div className="flex items-center justify-between text-[11px] text-[#4B5563] mt-1.5 font-bold">
                         <span>{subject.progress || 0}% Syllabus completed</span>
                         <span>
                           {new Date(subject.examDate).toLocaleDateString('en-US', {
@@ -501,10 +543,10 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0 pl-2">
-                      <p className="text-xl font-extrabold font-mono" style={{ color: urgencyColor }}>
+                      <p className="text-xl font-black" style={{ color: urgencyColor }}>
                         {days === 0 ? 'Today!' : days}
                       </p>
-                      <p className="text-[10px] uppercase font-bold text-[#475569]">
+                      <p className="text-[10px] uppercase font-black text-[#6B7280]">
                         {days === 0 ? 'Exam' : 'Days left'}
                       </p>
                     </div>
@@ -515,74 +557,71 @@ export default function Dashboard() {
           )}
         </motion.div>
 
-        {/* Pending Tasks with Quick Complete */}
+        {/* Priority Active Tasks Card */}
         <motion.div
           initial={{ opacity: 0, x: 16 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.25 }}
-          className="glass-card p-6 border border-[#1E293B] flex flex-col"
+          className="bg-white rounded-2xl p-6 flex flex-col border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
         >
-          <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#1E293B]">
-            <h2 className="text-base font-bold text-[#F1F5F9] flex items-center gap-2">
-              <CheckSquare size={17} className="text-[#10B981]" />
-              Active Priority Tasks
+          <div className="flex items-center justify-between mb-4 pb-3 border-b-2 border-black">
+            <h2 className="text-base font-black text-[#111827] flex items-center gap-2">
+              <CheckSquare size={18} className="text-[#15803D] stroke-[2.5]" /> Active Priority Tasks
             </h2>
             <Link
               to="/tasks"
-              className="text-xs text-[#818CF8] hover:underline flex items-center gap-1 font-medium"
+              className="text-xs text-[#15803D] hover:underline flex items-center gap-1 font-black"
             >
-              Task Board <ArrowRight size={13} />
+              Task Board <ArrowRight size={13} className="stroke-[3]" />
             </Link>
           </div>
 
           {loading ? (
             <div className="space-y-2.5">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="skeleton h-12 rounded-lg" />
+                <div key={i} className="skeleton h-12 rounded-xl" />
               ))}
             </div>
           ) : assignments.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center py-8 text-center">
-              <CheckCircle2 size={36} className="text-emerald-500/40 mb-2.5" />
-              <p className="text-sm font-semibold text-[#F1F5F9]">All caught up!</p>
-              <p className="text-xs text-[#64748B] mt-1">No pending tasks on your plate</p>
+              <div className="w-12 h-12 rounded-2xl bg-[#A3E635] border-2 border-black flex items-center justify-center mb-3 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                <CheckSquare size={24} className="text-black stroke-[2.5]" />
+              </div>
+              <p className="text-sm font-black text-[#111827]">All caught up!</p>
+              <p className="text-xs font-bold text-[#6B7280] mt-1">No pending tasks on your plate</p>
               <button
                 onClick={() => setShowQuickTask(true)}
-                className="btn-ghost text-xs mt-3 inline-flex items-center gap-1.5 py-1.5 px-3"
+                className="btn-ghost text-xs mt-3.5 inline-flex items-center gap-1.5 py-1.5 px-3.5"
               >
-                <Plus size={13} /> Create a Task
+                <Plus size={13} className="stroke-[3]" /> Create a Task
               </button>
             </div>
           ) : (
-            <div className="space-y-2 flex-1">
+            <div className="space-y-2.5 flex-1">
               {assignments.map((task) => {
                 const isUrgent = task.priority === 'urgent';
                 const isImportant = task.priority === 'important';
-
                 return (
                   <div
                     key={task._id}
-                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-[#0B0F17]/70 border transition-all ${
+                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all border-2 ${
                       isUrgent
-                        ? 'border-red-500/30 bg-red-950/10'
-                        : 'border-[#1E293B] hover:border-[#334155]'
+                        ? 'border-red-500 bg-red-50 shadow-[2px_2px_0px_#EF4444]'
+                        : 'border-black bg-white hover:bg-[#F0FDF4] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
                     }`}
                   >
                     <button
                       onClick={() => handleCompleteTask(task._id)}
                       title="Mark task done"
-                      className="w-5 h-5 rounded-md border border-[#334155] hover:border-emerald-400 hover:bg-emerald-500/10 flex items-center justify-center text-transparent hover:text-emerald-400 transition-colors flex-shrink-0"
+                      className="w-5 h-5 rounded-md flex items-center justify-center text-transparent hover:text-black hover:bg-[#A3E635] border-2 border-black transition-colors flex-shrink-0 cursor-pointer"
                     >
-                      <CheckCircle2 size={13} />
+                      <CheckSquare size={13} className="stroke-[3]" />
                     </button>
-
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#E2E8F0] truncate">
-                        {task.title}
-                      </p>
+                      <p className="text-sm font-black text-[#111827] truncate">{task.title}</p>
                       {task.dueDate && (
-                        <p className="text-[11px] text-[#64748B] flex items-center gap-1 mt-0.5">
-                          <Calendar size={10} />
+                        <p className="text-[11px] text-[#4B5563] flex items-center gap-1 mt-0.5 font-bold">
+                          <Calendar size={11} />
                           Due{' '}
                           {new Date(task.dueDate).toLocaleDateString('en-US', {
                             month: 'short',
@@ -591,14 +630,13 @@ export default function Dashboard() {
                         </p>
                       )}
                     </div>
-
                     <span
-                      className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ${
+                      className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 border-2 border-black ${
                         isUrgent
-                          ? 'bg-red-500/15 text-red-400 border border-red-500/30'
+                          ? 'bg-red-200 text-red-900 shadow-[1px_1px_0px_#000]'
                           : isImportant
-                          ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
-                          : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                          ? 'bg-amber-200 text-amber-900 shadow-[1px_1px_0px_#000]'
+                          : 'bg-[#A3E635] text-black shadow-[1px_1px_0px_#000]'
                       }`}
                     >
                       {task.priority}
@@ -606,15 +644,17 @@ export default function Dashboard() {
                   </div>
                 );
               })}
-
               <div className="pt-2 flex items-center justify-between">
                 <button
                   onClick={() => setShowQuickTask(true)}
-                  className="text-xs text-[#818CF8] hover:text-[#A5B4FC] font-medium flex items-center gap-1"
+                  className="text-xs text-[#15803D] hover:text-black font-black flex items-center gap-1 cursor-pointer"
                 >
-                  <Plus size={13} /> Add another task
+                  <Plus size={13} className="stroke-[3]" /> Add another task
                 </button>
-                <Link to="/tasks" className="text-xs text-[#64748B] hover:text-[#94A3B8]">
+                <Link
+                  to="/tasks"
+                  className="text-xs text-[#6B7280] hover:text-black font-bold"
+                >
                   Open full Kanban →
                 </Link>
               </div>

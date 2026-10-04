@@ -1,6 +1,8 @@
 /* ============================================================
    StudyMate Global Stylesheet
-   Design System: Dark-mode first, glassmorphism, micro-animations
+   Design System: Light neo-brutalist, illustrative sticker-style
+   Palette: White (#FFFFFF), Light Green (#A3E635 / lime-400),
+            Black outlines (#000000), Charcoal text (#111827)
    ============================================================ */
 
 @tailwind base;
@@ -9,7 +11,10 @@
 
 /* ── Base Reset & Design Tokens ─────────────────────────────────────────────── */
 @layer base {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box;
   }
 
@@ -20,166 +25,510 @@
   }
 
   body {
-    @apply bg-[#0B0F17] text-[#F1F5F9] font-sans;
-    background-image: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 60%),
-                      radial-gradient(ellipse at 80% 20%, rgba(16,185,129,0.05) 0%, transparent 50%);
-    background-attachment: fixed;
+    background-color: #F0FDF4;
+    color: #111827;
+    font-family: 'Nunito', 'Inter', ui-sans-serif, system-ui, sans-serif;
     min-height: 100vh;
   }
 
-  /* Custom scrollbar — subtle and slim */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #0B0F17; }
-  ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  /* Custom scrollbar — light themed */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
 
-  ::selection { background: rgba(99,102,241,0.3); color: #F1F5F9; }
+  ::-webkit-scrollbar-track {
+    background: #F0FDF4;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #A3E635;
+    border-radius: 3px;
+    border: 1px solid #000;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #84cc16;
+  }
+
+  ::selection {
+    background: rgba(163, 230, 53, 0.35);
+    color: #111827;
+  }
 }
 
 /* ── Reusable Component Classes ──────────────────────────────────────────────── */
 @layer components {
-  /* Glassmorphism card */
+
+  /* ── Neo-brutalist card (replaces glassmorphism) ── */
   .glass-card {
-    @apply bg-[#151C2C]/80 backdrop-blur-md border border-[#1E293B] rounded-xl;
-    box-shadow: 0 0 0 1px rgba(30,41,59,0.8), 0 4px 6px -1px rgba(0,0,0,0.3);
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    background: #ffffff;
+    border-radius: 1rem;
+    border: 2px solid #000000;
+    box-shadow: 4px 4px 0px #000000;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
   }
 
   .glass-card:hover {
-    border-color: rgba(99,102,241,0.25);
-    box-shadow: 0 0 0 1px rgba(99,102,241,0.2), 0 10px 15px -3px rgba(0,0,0,0.4);
+    box-shadow: 6px 6px 0px #000000;
+    transform: translate(-1px, -1px);
   }
 
-  /* Primary CTA button */
+  /* ── Primary CTA button ── */
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-4 py-2 bg-[#6366F1] hover:bg-[#5558e0] 
-           text-white font-medium rounded-lg transition-all duration-200 
-           disabled:opacity-50 disabled:cursor-not-allowed;
-    box-shadow: 0 0 0 0 rgba(99,102,241,0);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #A3E635;
+    color: #111827;
+    font-weight: 800;
+    border-radius: 0.75rem;
+    border: 2px solid #000000;
+    box-shadow: 3px 3px 0px #000000;
+    transition: all 0.15s ease;
+    cursor: pointer;
   }
 
   .btn-primary:hover:not(:disabled) {
-    box-shadow: 0 0 20px rgba(99,102,241,0.3);
-    transform: translateY(-1px);
+    box-shadow: 5px 5px 0px #000000;
+    transform: translate(-1px, -1px);
   }
 
   .btn-primary:active:not(:disabled) {
-    transform: translateY(0);
+    box-shadow: 1px 1px 0px #000000;
+    transform: translate(1px, 1px);
   }
 
-  /* Ghost button */
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ── Ghost button ── */
   .btn-ghost {
-    @apply inline-flex items-center gap-2 px-4 py-2 text-[#94A3B8] hover:text-[#F1F5F9] 
-           hover:bg-[#1E293B] font-medium rounded-lg transition-all duration-200;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #ffffff;
+    color: #111827;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    border: 2px solid #000000;
+    box-shadow: 3px 3px 0px #000000;
+    transition: all 0.15s ease;
+    cursor: pointer;
   }
 
-  /* Danger button */
+  .btn-ghost:hover {
+    background-color: #F0FDF4;
+    box-shadow: 5px 5px 0px #000000;
+    transform: translate(-1px, -1px);
+  }
+
+  /* ── Danger button ── */
   .btn-danger {
-    @apply inline-flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/40
-           text-red-400 hover:text-red-300 font-medium rounded-lg transition-all duration-200
-           border border-red-800/50;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #FEE2E2;
+    color: #B91C1C;
+    font-weight: 700;
+    border-radius: 0.75rem;
+    border: 2px solid #EF4444;
+    box-shadow: 3px 3px 0px #EF4444;
+    transition: all 0.15s ease;
+    cursor: pointer;
   }
 
-  /* Form input styling */
+  .btn-danger:hover {
+    box-shadow: 5px 5px 0px #EF4444;
+    transform: translate(-1px, -1px);
+  }
+
+  /* ── Form inputs ── */
   .form-input {
-    @apply w-full px-4 py-2.5 bg-[#0B0F17] border border-[#1E293B] rounded-lg 
-           text-[#F1F5F9] placeholder-[#475569] outline-none transition-all duration-200;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 0.75rem;
+    color: #111827;
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .form-input::placeholder {
+    color: #9CA3AF;
   }
 
   .form-input:focus {
-    @apply border-[#6366F1];
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    border-color: #A3E635;
+    box-shadow: 0 0 0 3px rgba(163, 230, 53, 0.25);
   }
 
-  /* Skeleton loader */
+  /* ── Skeleton loader (light) ── */
   .skeleton {
-    @apply rounded-lg bg-[#151C2C];
-    background-image: linear-gradient(90deg, #151C2C 25%, #1E293B 50%, #151C2C 75%);
+    border-radius: 0.75rem;
+    background-color: #E5E7EB;
+    border: 2px solid #D1D5DB;
+    background-image: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s linear infinite;
   }
 
-  /* Priority badges */
+  /* ── Priority badges ── */
   .badge-chill {
-    @apply text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/20;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    background-color: #D1FAE5;
+    color: #065F46;
+    border: 1.5px solid #059669;
   }
 
   .badge-important {
-    @apply text-xs px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/20;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    background-color: #FEF3C7;
+    color: #92400E;
+    border: 1.5px solid #D97706;
   }
 
   .badge-urgent {
-    @apply text-xs px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/20 animate-pulse;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    background-color: #FEE2E2;
+    color: #991B1B;
+    border: 1.5px solid #EF4444;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
-  /* Status badges */
-  .badge-todo { @apply text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300; }
-  .badge-in_progress { @apply text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300; }
-  .badge-completed { @apply text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300; }
+  /* ── Status badges ── */
+  .badge-todo {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    background-color: #F3F4F6;
+    color: #4B5563;
+    border: 1.5px solid #9CA3AF;
+  }
 
-  /* Sidebar nav item */
+  .badge-in_progress {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    background-color: #DBEAFE;
+    color: #1D4ED8;
+    border: 1.5px solid #3B82F6;
+  }
+
+  .badge-completed {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    background-color: #ECFDF5;
+    color: #065F46;
+    border: 1.5px solid #A3E635;
+  }
+
+  /* ── Sidebar nav item ── */
   .nav-item {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#94A3B8] hover:text-[#F1F5F9] 
-           hover:bg-[#1E293B] transition-all duration-150 cursor-pointer font-medium;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.75rem;
+    color: #1F2937;
+    font-weight: 800;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+
+  .nav-item:hover {
+    background-color: #F0FDF4;
+    color: #000000;
+    border-color: rgba(0, 0, 0, 0.2);
   }
 
   .nav-item.active {
-    @apply text-[#6366F1] bg-[#6366F1]/10;
+    background-color: #A3E635;
+    color: #000000;
+    font-weight: 900;
+    border: 2px solid #000000;
+    box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
   }
 
-  /* Markdown content styling */
+  /* ── Markdown content styling ── */
   .markdown-body {
-    @apply text-[#CBD5E1] leading-relaxed;
+    color: #374151;
+    line-height: 1.7;
   }
 
-  .markdown-body h1 { @apply text-2xl font-bold text-[#F1F5F9] mb-4 mt-6; }
-  .markdown-body h2 { @apply text-xl font-semibold text-[#F1F5F9] mb-3 mt-5; }
-  .markdown-body h3 { @apply text-lg font-semibold text-[#E2E8F0] mb-2 mt-4; }
-  .markdown-body p { @apply mb-3; }
-  .markdown-body ul { @apply list-disc list-inside mb-3 space-y-1; }
-  .markdown-body ol { @apply list-decimal list-inside mb-3 space-y-1; }
-  .markdown-body li { @apply text-[#CBD5E1]; }
-  .markdown-body code { @apply font-mono text-sm bg-[#1E293B] text-[#A5B4FC] px-1.5 py-0.5 rounded; }
-  .markdown-body pre { @apply bg-[#0B0F17] border border-[#1E293B] rounded-lg p-4 mb-4 overflow-x-auto; }
-  .markdown-body pre code { @apply bg-transparent text-[#A5B4FC] p-0; }
-  .markdown-body blockquote { @apply border-l-4 border-[#6366F1] pl-4 italic text-[#94A3B8] my-4; }
-  .markdown-body table { @apply w-full border-collapse mb-4; }
-  .markdown-body th { @apply text-left px-3 py-2 bg-[#1E293B] text-[#F1F5F9] font-semibold text-sm border border-[#334155]; }
-  .markdown-body td { @apply px-3 py-2 text-sm text-[#CBD5E1] border border-[#1E293B]; }
-  .markdown-body strong { @apply text-[#F1F5F9] font-semibold; }
-  .markdown-body a { @apply text-[#818CF8] hover:text-[#A5B4FC] underline; }
-  .markdown-body hr { @apply border-[#1E293B] my-6; }
+  .markdown-body h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .markdown-body h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .markdown-body h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .markdown-body p {
+    margin-bottom: 0.75rem;
+  }
+
+  .markdown-body ul {
+    list-style: disc inside;
+    margin-bottom: 0.75rem;
+  }
+
+  .markdown-body ol {
+    list-style: decimal inside;
+    margin-bottom: 0.75rem;
+  }
+
+  .markdown-body li {
+    color: #374151;
+  }
+
+  .markdown-body code {
+    font-family: ui-monospace, monospace;
+    font-size: 0.875rem;
+    background-color: #F0FDF4;
+    color: #16A34A;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    border: 1px solid #A3E635;
+  }
+
+  .markdown-body pre {
+    background-color: #F8FAFC;
+    border: 2px solid #000;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+  }
+
+  .markdown-body pre code {
+    background: transparent;
+    border: 0;
+    color: #16A34A;
+    padding: 0;
+  }
+
+  .markdown-body blockquote {
+    border-left: 4px solid #A3E635;
+    padding-left: 1rem;
+    font-style: italic;
+    color: #6B7280;
+    margin: 1rem 0;
+  }
+
+  .markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+
+  .markdown-body th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    background: #F0FDF4;
+    color: #111827;
+    font-weight: 700;
+    font-size: 0.875rem;
+    border: 2px solid #000;
+  }
+
+  .markdown-body td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: #374151;
+    border: 1px solid #D1D5DB;
+  }
+
+  .markdown-body strong {
+    color: #111827;
+    font-weight: 800;
+  }
+
+  .markdown-body a {
+    color: #16A34A;
+    text-decoration: underline;
+    font-weight: 700;
+  }
+
+  .markdown-body a:hover {
+    color: #15803D;
+  }
+
+  .markdown-body hr {
+    border-color: #D1D5DB;
+    margin: 1.5rem 0;
+  }
+
+  /* ── Dashboard quick action cards ── */
+  .qa-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1rem;
+    text-align: left;
+    cursor: pointer;
+    border: 2px solid #000000;
+    box-shadow: 4px 4px 0px #000000;
+    transition: all 0.15s ease;
+  }
+
+  .qa-card:hover {
+    box-shadow: 6px 6px 0px #000000;
+    transform: translate(-1px, -1px);
+  }
+
+  .qa-card:active {
+    box-shadow: 1px 1px 0px #000000;
+    transform: translate(2px, 2px);
+  }
+
+  /* ── Dashboard stat cards ── */
+  .stat-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #000000;
+    box-shadow: 4px 4px 0px #000000;
+    transition: all 0.15s ease;
+  }
+
+  .stat-card:hover {
+    box-shadow: 6px 6px 0px #000000;
+    transform: translate(-1px, -1px);
+  }
+
+  /* ── Outline token badge (header streak/level) ── */
+  .token-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.875rem;
+    background-color: #ffffff;
+    border-radius: 9999px;
+    font-weight: 800;
+    font-size: 0.875rem;
+    color: #111827;
+    border: 2px solid #000000;
+    box-shadow: 2px 2px 0px #000000;
+  }
 }
 
 /* ── Keyframe Animations ─────────────────────────────────────────────────────── */
 @layer utilities {
   @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
   }
 
   @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
-  .animate-fade-in-up { animation: fadeInUp 0.3s ease forwards; }
-  .animate-scale-in { animation: scaleIn 0.2s ease forwards; }
+  .animate-fade-in-up {
+    animation: fadeInUp 0.3s ease forwards;
+  }
 
-  /* Heatmap cell colors — intensity scale */
-  .heat-0 { background: #151C2C; }
-  .heat-1 { background: rgba(99,102,241,0.2); }
-  .heat-2 { background: rgba(99,102,241,0.4); }
-  .heat-3 { background: rgba(99,102,241,0.65); }
-  .heat-4 { background: #6366F1; }
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease forwards;
+  }
 
-  /* Urgency glow effect for urgent tasks */
+  /* ── Heatmap cell colors — light green intensity scale ── */
+  .heat-0 {
+    background: #F0FDF4;
+    border: 1.5px solid #D1D5DB;
+    border-radius: 3px;
+  }
+
+  .heat-1 {
+    background: #DCFCE7;
+    border: 1.5px solid #86EFAC;
+    border-radius: 3px;
+  }
+
+  .heat-2 {
+    background: #BBF7D0;
+    border: 1.5px solid #4ADE80;
+    border-radius: 3px;
+  }
+
+  .heat-3 {
+    background: #86EFAC;
+    border: 1.5px solid #16A34A;
+    border-radius: 3px;
+  }
+
+  .heat-4 {
+    background: #A3E635;
+    border: 1.5px solid #000000;
+    border-radius: 3px;
+  }
+
+  /* ── Urgency indicator ── */
   .urgent-glow {
-    box-shadow: 0 0 0 1px rgba(239,68,68,0.3), 0 0 15px rgba(239,68,68,0.15);
+    box-shadow: 3px 3px 0px #EF4444;
+    border-color: #EF4444 !important;
   }
 }

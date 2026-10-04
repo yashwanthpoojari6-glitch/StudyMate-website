@@ -1,25 +1,45 @@
-// pages/TaskBoard.jsx — Executive Kanban task board
+// pages/TaskBoard.jsx — Neo-Brutalist Kanban task board with sticker aesthetic
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, X, Calendar, AlertTriangle, CheckCircle2, ListTodo,
-  Loader2, Filter, Search, ArrowRight, ArrowLeft, Trash2, CheckSquare
+  Loader2, Search, ArrowRight, ArrowLeft, Trash2, CheckSquare, Sparkles, Star
 } from 'lucide-react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 
+// ── Column Configuration with Vibrant Pastel Headers ──────────────────────────
 const COLUMNS = [
-  { id: 'todo', label: 'To Do', icon: ListTodo, color: '#94A3B8', bgBadge: 'bg-slate-500/10' },
-  { id: 'in_progress', label: 'In Progress', icon: Loader2, color: '#6366F1', bgBadge: 'bg-indigo-500/10' },
-  { id: 'completed', label: 'Completed', icon: CheckCircle2, color: '#10B981', bgBadge: 'bg-emerald-500/10' },
+  {
+    id: 'todo',
+    label: 'TO DO',
+    icon: ListTodo,
+    headerBg: 'bg-yellow-200',
+    emptyMsg: 'No tasks in To Do! Time to conquer the day.',
+  },
+  {
+    id: 'in_progress',
+    label: 'IN PROGRESS',
+    icon: Loader2,
+    headerBg: 'bg-blue-200',
+    emptyMsg: 'Nothing in progress. Pick a task and dive in!',
+  },
+  {
+    id: 'completed',
+    label: 'COMPLETED',
+    icon: CheckCircle2,
+    headerBg: 'bg-lime-200',
+    emptyMsg: 'No finished tasks yet. You got this!',
+  },
 ];
 
 const PRIORITIES = [
-  { value: 'chill', label: 'Chill (Low)', color: 'emerald' },
+  { value: 'chill', label: 'Chill (Low)', color: 'lime' },
   { value: 'important', label: 'Important (Med)', color: 'amber' },
   { value: 'urgent', label: 'Urgent (High)', color: 'red' },
 ];
 
+// ── Neo-Brutalist Task Card ───────────────────────────────────────────────────
 const TaskCard = ({ task, onStatusChange, onDelete }) => {
   const isOverdue = task.dueDate && new Date() > new Date(task.dueDate) && task.status !== 'completed';
   const dueDate = task.dueDate ? new Date(task.dueDate) : null;
@@ -32,107 +52,104 @@ const TaskCard = ({ task, onStatusChange, onDelete }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -2 }}
-      className={`glass-card p-4 border transition-all group ${
-        isOverdue
-          ? 'border-red-500/40 bg-red-950/10'
-          : task.priority === 'urgent' && task.status !== 'completed'
-          ? 'border-red-500/25 bg-red-950/5'
-          : 'border-[#1E293B] hover:border-[#334155]'
+      className={`bg-white rounded-2xl p-4 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] transition-all group relative select-none ${
+        isOverdue ? 'bg-red-50/60' : ''
       }`}
     >
-      {/* Priority badge & delete button */}
-      <div className="flex items-center justify-between mb-2">
+      {/* Top Header: Priority Badge & Delete Button */}
+      <div className="flex items-center justify-between mb-2.5">
         <span
-          className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+          className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] flex items-center gap-1 ${
             task.priority === 'urgent'
-              ? 'bg-red-500/15 text-red-400 border border-red-500/30'
+              ? 'bg-red-200 text-red-950'
               : task.priority === 'important'
-              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
-              : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+              ? 'bg-amber-200 text-amber-950'
+              : 'bg-[#A3E635] text-black'
           }`}
         >
-          {task.priority === 'urgent' && <AlertTriangle size={10} className="inline mr-1" />}
+          {task.priority === 'urgent' && <AlertTriangle size={11} className="stroke-[3]" />}
           {task.priority}
         </span>
 
         <button
           onClick={() => onDelete(task._id)}
-          className="text-[#475569] hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="w-7 h-7 rounded-lg bg-white hover:bg-red-100 text-gray-500 hover:text-red-600 border-2 border-transparent hover:border-black flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
           title="Delete task"
         >
-          <Trash2 size={13} />
+          <Trash2 size={13} className="stroke-[2.5]" />
         </button>
       </div>
 
+      {/* Task Title */}
       <p
-        className={`text-sm font-semibold leading-relaxed ${
-          task.status === 'completed' ? 'line-through text-[#64748B]' : 'text-[#F1F5F9]'
+        className={`text-sm font-black leading-snug ${
+          task.status === 'completed' ? 'line-through text-gray-400' : 'text-[#111827]'
         }`}
       >
         {task.title}
       </p>
 
-      {/* Linked Subject */}
+      {/* Linked Subject Pill */}
       {task.subject && (
-        <div className="flex items-center gap-1.5 mt-2 text-xs text-[#94A3B8]">
+        <div className="inline-flex items-center gap-1.5 mt-2.5 px-2 py-0.5 rounded-md bg-[#F0FDF4] border border-black text-xs font-bold text-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
           <span
-            className="w-2 h-2 rounded-full flex-shrink-0"
-            style={{ background: task.subject.colorTag || '#6366F1' }}
+            className="w-2.5 h-2.5 rounded-full flex-shrink-0 border border-black"
+            style={{ background: task.subject.colorTag || '#A3E635' }}
           />
-          <span className="truncate">{task.subject.title}</span>
+          <span className="truncate max-w-[170px]">{task.subject.title}</span>
         </div>
       )}
 
       {/* Due Date & Weightage */}
-      <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#1E293B]/70 text-[11px]">
+      <div className="flex items-center justify-between mt-3 pt-2.5 border-t-2 border-black/10 text-[11px] font-bold">
         {dueDate ? (
           <span
-            className={`flex items-center gap-1 font-medium ${
+            className={`flex items-center gap-1.5 ${
               isOverdue
-                ? 'text-red-400 font-bold'
+                ? 'text-red-700 font-black'
                 : daysUntilDue !== null && daysUntilDue <= 3
-                ? 'text-amber-400'
-                : 'text-[#64748B]'
+                ? 'text-amber-700 font-black'
+                : 'text-[#4B5563]'
             }`}
           >
-            <Calendar size={11} />
+            <Calendar size={12} className="stroke-[2.5]" />
             {isOverdue
               ? `Overdue (${Math.abs(daysUntilDue)}d)`
               : dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
           </span>
         ) : (
-          <span className="text-[#475569]">No due date</span>
+          <span className="text-gray-400 font-semibold">No due date</span>
         )}
 
         {task.weightage > 0 && (
-          <span className="text-[10px] text-[#818CF8] bg-[#6366F1]/10 px-1.5 py-0.5 rounded font-mono">
-            {task.weightage}% grade
+          <span className="text-[10px] font-black text-black bg-yellow-200 px-1.5 py-0.5 rounded border border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
+            {task.weightage}% weight
           </span>
         )}
       </div>
 
-      {/* Column transition buttons */}
-      <div className="flex items-center justify-between gap-1.5 mt-3 pt-1">
+      {/* Column Transition Buttons — Tactile Stickers */}
+      <div className="flex items-center justify-between gap-2 mt-3 pt-1">
         {task.status !== 'todo' && (
           <button
             onClick={() => onStatusChange(task._id, task.status === 'completed' ? 'in_progress' : 'todo')}
-            className="text-[11px] px-2 py-1 rounded bg-[#1E293B] text-[#94A3B8] hover:text-[#F1F5F9] hover:bg-[#334155] flex items-center gap-1 transition-colors"
+            className="text-[11px] font-black px-2.5 py-1 rounded-xl bg-white hover:bg-gray-100 text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-0 active:shadow-none flex items-center gap-1 transition-all cursor-pointer"
           >
-            <ArrowLeft size={11} /> Back
+            <ArrowLeft size={11} className="stroke-[3]" /> Back
           </button>
         )}
         <div className="flex-1" />
         {task.status !== 'completed' && (
           <button
             onClick={() => onStatusChange(task._id, task.status === 'todo' ? 'in_progress' : 'completed')}
-            className={`text-[11px] px-2.5 py-1 rounded flex items-center gap-1 font-medium transition-colors ${
+            className={`text-[11px] font-black px-3 py-1 rounded-xl border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-y-0 active:shadow-none flex items-center gap-1.5 transition-all cursor-pointer ${
               task.status === 'todo'
-                ? 'bg-[#6366F1]/15 text-[#818CF8] hover:bg-[#6366F1]/30'
-                : 'bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/30'
+                ? 'bg-blue-200 hover:bg-blue-300 text-black'
+                : 'bg-lime-400 hover:bg-lime-300 text-black'
             }`}
           >
             {task.status === 'todo' ? (
-              <>Start <ArrowRight size={11} /></>
+              <>Start <ArrowRight size={12} className="stroke-[3]" /></>
             ) : (
               <>Complete ✓</>
             )}
@@ -143,6 +160,7 @@ const TaskCard = ({ task, onStatusChange, onDelete }) => {
   );
 };
 
+// ── Create Task Neo-Brutalist Modal ───────────────────────────────────────────
 const CreateTaskModal = ({ subjects, onClose, onCreate }) => {
   const [form, setForm] = useState({
     title: '',
@@ -168,27 +186,37 @@ const CreateTaskModal = ({ subjects, onClose, onCreate }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-xs" onClick={onClose} />
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="glass-card w-full max-w-md z-10 p-6 border border-[#1E293B] shadow-2xl"
+        className="bg-white rounded-3xl w-full max-w-md z-10 p-6 sm:p-7 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] relative select-none"
       >
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-[#F1F5F9]">Create New Task</h2>
-          <button onClick={onClose} className="text-[#64748B] hover:text-[#94A3B8]">
-            <X size={18} />
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#A3E635] flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+              <Plus size={20} className="text-black stroke-[3]" />
+            </div>
+            <h2 className="text-xl font-black text-[#111827]">Create New Task</h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-white hover:bg-red-50 flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-colors cursor-pointer"
+          >
+            <X size={16} className="text-black stroke-[2.5]" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-[#94A3B8] mb-1">Task Title *</label>
+            <label className="block text-xs font-black text-[#374151] mb-1.5 uppercase tracking-wider">
+              Task Title *
+            </label>
             <input
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-              className="form-input text-sm"
+              className="form-input text-sm font-semibold"
               placeholder="e.g. Read chapters 3 & 4"
               autoFocus
             />
@@ -196,11 +224,13 @@ const CreateTaskModal = ({ subjects, onClose, onCreate }) => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-[#94A3B8] mb-1">Priority</label>
+              <label className="block text-xs font-black text-[#374151] mb-1.5 uppercase tracking-wider">
+                Priority
+              </label>
               <select
                 value={form.priority}
                 onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value }))}
-                className="form-input text-sm"
+                className="form-input text-sm font-bold"
               >
                 {PRIORITIES.map((p) => (
                   <option key={p.value} value={p.value}>
@@ -210,23 +240,27 @@ const CreateTaskModal = ({ subjects, onClose, onCreate }) => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#94A3B8] mb-1">Due Date</label>
+              <label className="block text-xs font-black text-[#374151] mb-1.5 uppercase tracking-wider">
+                Due Date
+              </label>
               <input
                 type="date"
                 value={form.dueDate}
                 onChange={(e) => setForm((f) => ({ ...f, dueDate: e.target.value }))}
-                className="form-input text-sm"
+                className="form-input text-sm font-semibold"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-[#94A3B8] mb-1">Course / Subject</label>
+              <label className="block text-xs font-black text-[#374151] mb-1.5 uppercase tracking-wider">
+                Course / Subject
+              </label>
               <select
                 value={form.subject}
                 onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
-                className="form-input text-sm"
+                className="form-input text-sm font-semibold"
               >
                 <option value="">None</option>
                 {subjects.map((s) => (
@@ -237,23 +271,32 @@ const CreateTaskModal = ({ subjects, onClose, onCreate }) => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-[#94A3B8] mb-1">Grade Weight (%)</label>
+              <label className="block text-xs font-black text-[#374151] mb-1.5 uppercase tracking-wider">
+                Grade Weight (%)
+              </label>
               <input
                 type="number"
                 min="0"
                 max="100"
                 value={form.weightage}
                 onChange={(e) => setForm((f) => ({ ...f, weightage: e.target.value }))}
-                className="form-input text-sm"
+                className="form-input text-sm font-semibold"
               />
             </div>
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="btn-ghost flex-1 justify-center text-xs">
+          <div className="flex gap-3 pt-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-ghost flex-1 justify-center text-xs py-2.5 font-black"
+            >
               Cancel
             </button>
-            <button type="submit" className="btn-primary flex-1 justify-center text-xs">
+            <button
+              type="submit"
+              className="btn-primary flex-1 justify-center text-xs py-2.5 font-black"
+            >
               Create Task
             </button>
           </div>
@@ -263,6 +306,7 @@ const CreateTaskModal = ({ subjects, onClose, onCreate }) => {
   );
 };
 
+// ── Main TaskBoard Component ──────────────────────────────────────────────────
 export default function TaskBoard() {
   const [tasks, setTasks] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -335,39 +379,49 @@ export default function TaskBoard() {
   const tasksByStatus = (status) => filteredTasks.filter((t) => t.status === status);
 
   const completedCount = tasks.filter((t) => t.status === 'completed').length;
+  const pendingCount = tasks.filter((t) => t.status !== 'completed').length;
   const completionPercent = tasks.length > 0 ? Math.round((completedCount / tasks.length) * 100) : 0;
 
   return (
-    <div className="p-6 md:p-8 h-full flex flex-col max-w-7xl mx-auto pb-24 md:pb-8">
-      {/* ── Top Header & Stats ─────────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 flex-shrink-0">
+    <div className="p-6 md:p-8 h-full flex flex-col max-w-7xl mx-auto pb-24 md:pb-8 select-none">
+      {/* ── Top Header & Stats (Ultra-Bold Black Title & Sticker Inputs) ─────── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 mb-8 flex-shrink-0 border-b-2 border-black pb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#F1F5F9] flex items-center gap-2 tracking-tight">
-            <CheckSquare size={24} className="text-[#6366F1]" />
+          <h1 className="text-3xl md:text-4xl font-black text-black flex items-center gap-3 tracking-tight">
+            <div className="w-10 h-10 rounded-2xl bg-[#A3E635] flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+              <CheckSquare size={22} className="text-black stroke-[3]" />
+            </div>
             Task Board
           </h1>
-          <p className="text-xs text-[#64748B] mt-1">
-            {tasks.filter((t) => t.status !== 'completed').length} pending • {completionPercent}% overall completion
-          </p>
+          <div className="flex items-center gap-2 mt-2">
+            <span className="text-xs font-bold text-[#4B5563]">
+              {pendingCount} pending tasks
+            </span>
+            <span className="text-black font-black">•</span>
+            <span className="text-xs font-black bg-white text-black px-2.5 py-0.5 rounded-full border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
+              {completionPercent}% overall completion
+            </span>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Search */}
+        {/* Inputs & Action Button: Crisp White Containers, 2px Black Borders & Drop Shadows */}
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Search Input */}
           <div className="relative">
-            <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#475569]" />
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-black stroke-[2.5]" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search tasks..."
-              className="bg-[#0D1220] border border-[#1E293B] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#F1F5F9] placeholder-[#475569] outline-none focus:border-[#6366F1]"
+              className="bg-white border-2 border-black rounded-xl pl-9 pr-3.5 py-2 text-xs font-bold text-black placeholder-gray-500 outline-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all"
             />
           </div>
 
-          {/* Priority filter */}
+          {/* Priority Filter Dropdown */}
           <select
             value={filterPriority}
             onChange={(e) => setFilterPriority(e.target.value)}
-            className="bg-[#0D1220] border border-[#1E293B] rounded-xl px-3 py-1.5 text-xs text-[#94A3B8] outline-none"
+            className="bg-white border-2 border-black rounded-xl px-3 py-2 text-xs font-black text-black outline-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] cursor-pointer"
           >
             <option value="all">All Priorities</option>
             <option value="urgent">Urgent Only</option>
@@ -375,49 +429,65 @@ export default function TaskBoard() {
             <option value="chill">Chill Only</option>
           </select>
 
-          <button onClick={() => setShowModal(true)} className="btn-primary text-xs py-2 px-3.5">
-            <Plus size={15} /> New Task
+          {/* New Task Sticker Button */}
+          <button
+            onClick={() => setShowModal(true)}
+            className="px-4 py-2 bg-[#A3E635] hover:bg-[#8cee2b] text-black font-black text-xs rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <Plus size={16} className="stroke-[3]" /> New Task
           </button>
         </div>
       </div>
 
-      {/* ── 3-Column Kanban Board ─────────────────────────────────────────── */}
+      {/* ── 3-Column Kanban Board (Clean White Containers, 2px Borders & 6px Shadows) ── */}
       {loading ? (
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-3 gap-6">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="skeleton h-80 rounded-2xl" />
+            <div key={i} className="skeleton h-88 rounded-3xl" />
           ))}
         </div>
       ) : (
-        <div className="grid md:grid-cols-3 gap-5 flex-1 min-h-0 overflow-y-auto">
+        <div className="grid md:grid-cols-3 gap-6 flex-1 min-h-0 overflow-y-auto pr-1">
           {COLUMNS.map((col) => {
             const colTasks = tasksByStatus(col.id);
 
             return (
               <div
                 key={col.id}
-                className="flex flex-col min-h-0 bg-[#0D1220]/60 rounded-2xl border border-[#1E293B] p-3.5"
+                className="flex flex-col min-h-0 bg-white rounded-3xl border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] overflow-hidden"
               >
-                {/* Column Header */}
-                <div className="flex items-center justify-between mb-3.5 px-1 pb-2 border-b border-[#1E293B]/70">
+                {/* Column Header: Distinct Pastel Background with 2px Black Bottom Border */}
+                <div
+                  className={`flex items-center justify-between p-4 border-b-2 border-black ${col.headerBg}`}
+                >
                   <div className="flex items-center gap-2">
-                    <col.icon size={16} style={{ color: col.color }} />
-                    <span className="text-xs font-bold text-[#F1F5F9] uppercase tracking-wider">
+                    <col.icon size={18} className="text-black stroke-[3]" />
+                    <span className="text-xs font-black text-black tracking-wider uppercase">
                       {col.label}
                     </span>
                   </div>
-                  <span className="text-xs font-mono font-bold bg-[#151C2C] text-[#818CF8] px-2 py-0.5 rounded-full border border-[#1E293B]">
+                  <span className="text-xs font-black bg-white text-black px-2.5 py-0.5 rounded-full border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
                     {colTasks.length}
                   </span>
                 </div>
 
                 {/* Cards Container */}
-                <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+                <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#FAFBFD]">
                   <AnimatePresence mode="popLayout">
                     {colTasks.length === 0 ? (
-                      <div className="text-center py-12 border border-dashed border-[#1E293B] rounded-xl">
-                        <p className="text-xs text-[#475569]">No tasks in {col.label.toLowerCase()}</p>
-                      </div>
+                      /* Lively Sticker-Style Empty State */
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-center py-12 px-4 bg-white border-2 border-dashed border-black rounded-2xl flex flex-col items-center justify-center gap-2.5"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-[#F0FDF4] border-2 border-black flex items-center justify-center shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                          <Star size={18} className="text-amber-500 fill-amber-400 stroke-[2.5]" />
+                        </div>
+                        <p className="text-xs font-black text-black max-w-[200px] leading-relaxed">
+                          {col.emptyMsg}
+                        </p>
+                      </motion.div>
                     ) : (
                       colTasks.map((task) => (
                         <TaskCard

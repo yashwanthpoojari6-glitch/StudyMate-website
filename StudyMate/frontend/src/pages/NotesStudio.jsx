@@ -1,4 +1,4 @@
-// pages/NotesStudio.jsx — Split-screen Markdown note editor with AI copilot panel
+// pages/NotesStudio.jsx — Neo-Brutalist split-screen Markdown note editor with AI copilot panel
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,9 +13,33 @@ import {
 import api from '../services/api';
 import toast from 'react-hot-toast';
 
+// ── Vector Starburst & Sparkle Accents ──────────────────────────────────────────
+const VectorStarburst = ({ size = 32, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" className={className}>
+    <path
+      d="M16 0 L18 12 L30 16 L18 20 L16 32 L14 20 L2 16 L14 12 Z"
+      fill="#A3E635"
+      stroke="#000"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const VectorSparkle = ({ size = 20, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 20 20" fill="none" className={className}>
+    <path
+      d="M10 0 L11.5 7 L18.5 10 L11.5 13 L10 20 L8.5 13 L1.5 10 L8.5 7 Z"
+      fill="#BBF7D0"
+      stroke="#000"
+      strokeWidth="1.5"
+    />
+  </svg>
+);
+
 // ── Skeleton for note list ─────────────────────────────────────────────────────
 const NoteSkeleton = () => (
-  <div className="space-y-2 px-3 py-2">
+  <div className="space-y-2.5 px-3 py-2">
     {[...Array(5)].map((_, i) => (
       <div key={i} className="skeleton h-14 rounded-xl" />
     ))}
@@ -118,113 +142,120 @@ const AICopilot = ({ noteId, noteTitle, noteContent, onFlashcardsGenerated }) =>
   };
 
   const tools = [
-    { key: 'summarize', label: 'Summarize Note', desc: 'Concise executive summary', icon: AlignLeft, color: '#6366F1' },
-    { key: 'keyterms', label: 'Extract Key Terms', desc: 'High-yield definitions', icon: Tag, color: '#10B981' },
-    { key: 'flashcards', label: 'Convert to Flashcards', desc: 'Create study deck', icon: Layers, color: '#F59E0B' },
+    { key: 'summarize', label: 'Summarize Note', desc: 'Concise executive summary', icon: AlignLeft, color: '#A3E635' },
+    { key: 'keyterms', label: 'Extract Key Terms', desc: 'High-yield definitions', icon: Tag, color: '#86EFAC' },
+    { key: 'flashcards', label: 'Convert to Flashcards', desc: 'Create study deck', icon: Layers, color: '#FCD34D' },
   ];
 
   return (
-    <div className="h-full flex flex-col bg-[#0D1220]">
+    <div className="h-full flex flex-col bg-white">
       {/* Copilot Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1E293B]">
+      <div className="flex items-center justify-between px-4 py-3.5 border-b-2 border-black bg-white">
         <div className="flex items-center gap-2">
-          <Brain size={17} className="text-[#6366F1]" />
-          <span className="text-sm font-bold text-[#F1F5F9]">AI Copilot</span>
+          <div className="w-7 h-7 rounded-lg bg-[#A3E635] flex items-center justify-center border-2 border-black shadow-[1px_1px_0px_#000]">
+            <Brain size={16} className="text-black stroke-[2.5]" />
+          </div>
+          <span className="text-sm font-black text-[#111827]">AI Copilot</span>
         </div>
-        <span className="text-[10px] font-bold bg-[#6366F1]/15 text-[#818CF8] px-2 py-0.5 rounded-full border border-[#6366F1]/30">
+        <span className="text-[10px] font-black bg-[#A3E635] text-black px-2 py-0.5 rounded-full border-2 border-black shadow-[1px_1px_0px_#000]">
           Gemini Pro
         </span>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#1E293B] px-3 pt-2">
+      <div className="flex border-b-2 border-black px-3 py-2 bg-[#F9FAFB] gap-2">
         <button
           onClick={() => setActiveTab('tools')}
-          className={`flex-1 pb-2 text-xs font-semibold flex items-center justify-center gap-1.5 border-b-2 transition-colors ${
+          className={`flex-1 py-1.5 px-2 text-xs font-black rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
             activeTab === 'tools'
-              ? 'border-[#6366F1] text-[#F1F5F9]'
-              : 'border-transparent text-[#64748B] hover:text-[#94A3B8]'
+              ? 'bg-[#A3E635] text-black border-2 border-black shadow-[2px_2px_0px_#000]'
+              : 'text-[#4B5563] hover:text-black border-2 border-transparent hover:bg-white'
           }`}
         >
-          <Sparkles size={13} /> Tools
+          <Sparkles size={13} className="stroke-[2.5]" /> Tools
         </button>
         <button
           onClick={() => setActiveTab('chat')}
-          className={`flex-1 pb-2 text-xs font-semibold flex items-center justify-center gap-1.5 border-b-2 transition-colors ${
+          className={`flex-1 py-1.5 px-2 text-xs font-black rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
             activeTab === 'chat'
-              ? 'border-[#6366F1] text-[#F1F5F9]'
-              : 'border-transparent text-[#64748B] hover:text-[#94A3B8]'
+              ? 'bg-[#A3E635] text-black border-2 border-black shadow-[2px_2px_0px_#000]'
+              : 'text-[#4B5563] hover:text-black border-2 border-transparent hover:bg-white'
           }`}
         >
-          <MessageSquare size={13} /> Ask Copilot
+          <MessageSquare size={13} className="stroke-[2.5]" /> Ask Copilot
         </button>
       </div>
 
       {/* Tab 1: Tools */}
       {activeTab === 'tools' && (
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="p-3.5 space-y-2 flex-shrink-0">
+        <div className="flex-1 flex flex-col overflow-hidden bg-white">
+          <div className="p-3.5 space-y-2.5 flex-shrink-0">
             {tools.map(({ key, label, desc, icon: Icon, color }) => (
               <button
                 key={key}
                 onClick={() => runTool(key)}
                 disabled={!!loading}
-                className="w-full flex items-center gap-3 p-2.5 rounded-xl bg-[#0B0F17]/80 border border-[#1E293B] hover:border-[#334155] text-left transition-all disabled:opacity-50 group"
+                className="w-full flex items-center gap-3 p-3 rounded-xl bg-white border-2 border-black shadow-[2px_2px_0px_#000] hover:shadow-[4px_4px_0px_#000] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0px_#000] text-left transition-all disabled:opacity-50 group cursor-pointer"
               >
                 <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105"
-                  style={{ background: `${color}18` }}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 border-2 border-black shadow-[1px_1px_0px_#000]"
+                  style={{ backgroundColor: color }}
                 >
                   {loading === key ? (
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" style={{ color }} />
+                    <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
                   ) : (
-                    <Icon size={16} style={{ color }} />
+                    <Icon size={16} className="text-black stroke-[2.5]" />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold text-[#F1F5F9] group-hover:text-white truncate">
-                    {loading === key ? 'Processing...' : label}
+                  <p className="text-xs font-black text-[#111827] truncate">
+                    {loading === key ? 'Analyzing with AI...' : label}
                   </p>
-                  <p className="text-[10px] text-[#64748B] truncate">{desc}</p>
+                  <p className="text-[10px] font-bold text-[#4B5563] truncate">{desc}</p>
                 </div>
               </button>
             ))}
           </div>
 
           {/* AI Result Box */}
-          <div className="flex-1 overflow-hidden flex flex-col border-t border-[#1E293B]">
+          <div className="flex-1 overflow-hidden flex flex-col border-t-2 border-black bg-[#F9FAFB]">
             {result ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex-1 flex flex-col overflow-hidden"
               >
-                <div className="flex items-center justify-between px-3.5 py-2 bg-[#0B0F17] border-b border-[#1E293B]/70">
-                  <span className="text-[11px] font-bold text-[#818CF8] truncate">{resultTitle}</span>
-                  <div className="flex items-center gap-1">
+                <div className="flex items-center justify-between px-3.5 py-2 bg-[#A3E635] border-b-2 border-black">
+                  <span className="text-xs font-black text-black truncate">{resultTitle}</span>
+                  <div className="flex items-center gap-1.5">
                     <button
                       onClick={copyResult}
-                      className="text-[11px] text-[#64748B] hover:text-[#94A3B8] flex items-center gap-1 px-1.5 py-0.5 rounded"
+                      className="text-xs font-black text-black bg-white hover:bg-gray-100 flex items-center gap-1 px-2 py-0.5 rounded-lg border-2 border-black shadow-[1px_1px_0px_#000] cursor-pointer"
                     >
-                      {copied ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                      {copied ? <Check size={12} className="stroke-[3] text-emerald-600" /> : <Copy size={12} className="stroke-[2.5]" />}
                       {copied ? 'Copied' : 'Copy'}
                     </button>
                     <button
                       onClick={() => setResult(null)}
-                      className="text-[#64748B] hover:text-[#94A3B8] p-0.5"
+                      className="text-black hover:bg-black/10 p-1 rounded-lg border border-black cursor-pointer"
                     >
-                      <X size={12} />
+                      <X size={13} className="stroke-[2.5]" />
                     </button>
                   </div>
                 </div>
-                <div className="flex-1 overflow-y-auto p-3.5 text-xs text-[#CBD5E1] leading-relaxed markdown-body">
+                <div className="flex-1 overflow-y-auto p-4 text-xs text-[#111827] leading-relaxed markdown-body bg-white">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{result}</ReactMarkdown>
                 </div>
               </motion.div>
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center p-6 text-center text-[#475569]">
-                <Sparkles size={24} className="mb-2 opacity-40 text-[#6366F1]" />
-                <p className="text-xs">Click a tool above to analyze your note with AI</p>
+              <div className="flex-1 flex flex-col items-center justify-center p-6 text-center text-[#4B5563]">
+                <div className="w-10 h-10 rounded-xl bg-white border-2 border-black flex items-center justify-center mb-2 shadow-[2px_2px_0px_#000]">
+                  <Sparkles size={20} className="text-black stroke-[2]" />
+                </div>
+                <p className="text-xs font-black text-[#111827]">AI Copilot Ready</p>
+                <p className="text-[11px] font-bold text-[#6B7280] mt-1 max-w-[200px]">
+                  Click a tool above to analyze your note with Gemini Pro
+                </p>
               </div>
             )}
           </div>
@@ -233,7 +264,7 @@ const AICopilot = ({ noteId, noteTitle, noteContent, onFlashcardsGenerated }) =>
 
       {/* Tab 2: Ask Copilot Chat */}
       {activeTab === 'chat' && (
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden bg-[#F9FAFB]">
           <div className="flex-1 overflow-y-auto p-3 space-y-3">
             {chatMessages.map((m, idx) => (
               <div
@@ -241,10 +272,10 @@ const AICopilot = ({ noteId, noteTitle, noteContent, onFlashcardsGenerated }) =>
                 className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}
               >
                 <div
-                  className={`max-w-[90%] rounded-xl px-3 py-2 text-xs leading-relaxed ${
+                  className={`max-w-[90%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed border-2 border-black shadow-[2px_2px_0px_#000] ${
                     m.role === 'user'
-                      ? 'bg-[#6366F1] text-white rounded-br-none'
-                      : 'bg-[#151C2C] text-[#E2E8F0] border border-[#1E293B] rounded-bl-none'
+                      ? 'bg-[#A3E635] text-black font-bold rounded-br-none'
+                      : 'bg-white text-[#111827] font-medium rounded-bl-none'
                   }`}
                 >
                   <p className="whitespace-pre-wrap">{m.text}</p>
@@ -252,29 +283,29 @@ const AICopilot = ({ noteId, noteTitle, noteContent, onFlashcardsGenerated }) =>
               </div>
             ))}
             {chatLoading && (
-              <div className="flex items-center gap-1.5 text-xs text-[#818CF8] bg-[#151C2C] border border-[#1E293B] px-3 py-2 rounded-xl rounded-bl-none w-max">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1] animate-bounce" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1] animate-bounce delay-100" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#6366F1] animate-bounce delay-200" />
-                <span className="text-[10px] ml-1">Thinking...</span>
+              <div className="flex items-center gap-1.5 text-xs font-black text-black bg-white border-2 border-black shadow-[2px_2px_0px_#000] px-3 py-2 rounded-2xl rounded-bl-none w-max">
+                <span className="w-1.5 h-1.5 rounded-full bg-black animate-bounce" />
+                <span className="w-1.5 h-1.5 rounded-full bg-black animate-bounce delay-100" />
+                <span className="w-1.5 h-1.5 rounded-full bg-black animate-bounce delay-200" />
+                <span className="text-[11px] ml-1">Thinking...</span>
               </div>
             )}
             <div ref={chatEndRef} />
           </div>
 
-          <form onSubmit={handleSendChat} className="p-2 border-t border-[#1E293B] flex gap-1.5">
+          <form onSubmit={handleSendChat} className="p-2.5 border-t-2 border-black bg-white flex gap-2">
             <input
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               placeholder="Ask Copilot about this note..."
-              className="flex-1 bg-[#0B0F17] border border-[#1E293B] rounded-lg px-2.5 py-1.5 text-xs text-[#F1F5F9] placeholder-[#475569] outline-none focus:border-[#6366F1]"
+              className="flex-1 bg-white border-2 border-black rounded-xl px-3 py-1.5 text-xs font-bold text-[#111827] placeholder-[#6B7280] outline-none shadow-[2px_2px_0px_#000]"
             />
             <button
               type="submit"
               disabled={!chatInput.trim() || chatLoading}
-              className="w-8 h-8 rounded-lg bg-[#6366F1] hover:bg-[#4F46E5] text-white flex items-center justify-center transition-colors disabled:opacity-40 flex-shrink-0"
+              className="w-8 h-8 rounded-xl bg-[#A3E635] hover:bg-[#8cee2b] text-black border-2 border-black shadow-[2px_2px_0px_#000] flex items-center justify-center transition-all disabled:opacity-40 flex-shrink-0 cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
             >
-              <Send size={13} />
+              <Send size={14} className="stroke-[2.5]" />
             </button>
           </form>
         </div>
@@ -457,51 +488,60 @@ export default function NotesStudio() {
   );
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* ── Left Sidebar: Notes Navigator ────────────────────────────────────── */}
-      <div className="w-64 flex-shrink-0 border-r border-[#1E293B] bg-[#0D1220] flex flex-col hidden lg:flex">
-        <div className="p-3.5 border-b border-[#1E293B] flex items-center justify-between">
+    <div className="flex h-screen overflow-hidden bg-[#F0FDF4]">
+      {/* ── Left Sidebar: Notebook Panel (Clean White, 2px Solid Black Border) ── */}
+      <div className="w-72 flex-shrink-0 border-r-2 border-black bg-white flex flex-col hidden lg:flex">
+        {/* Notebook Header */}
+        <div className="p-3.5 border-b-2 border-black flex items-center justify-between bg-white">
           <div className="flex items-center gap-2">
-            <FileText size={16} className="text-[#818CF8]" />
-            <span className="text-xs font-bold uppercase tracking-wider text-[#94A3B8]">
+            <div className="w-7 h-7 rounded-lg bg-[#A3E635] flex items-center justify-center border-2 border-black shadow-[1px_1px_0px_#000]">
+              <FileText size={15} className="text-black stroke-[2.5]" />
+            </div>
+            <span className="text-xs font-black uppercase tracking-wider text-[#111827]">
               Notebook
             </span>
+            <span className="text-[10px] font-black bg-[#F0FDF4] text-black px-1.5 py-0.2 rounded-md border border-black">
+              {notes.length}
+            </span>
           </div>
+
           <button
             onClick={createNote}
-            className="w-7 h-7 rounded-lg bg-[#6366F1]/15 hover:bg-[#6366F1]/30 text-[#818CF8] flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-xl bg-[#A3E635] hover:bg-[#8cee2b] text-black flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_#000] hover:shadow-[3px_3px_0px_#000] transition-all cursor-pointer active:translate-x-0.5 active:translate-y-0.5"
             title="Create note"
           >
-            <Plus size={15} />
+            <Plus size={16} className="stroke-[3]" />
           </button>
         </div>
 
-        {/* Search Notes */}
-        <div className="p-2 border-b border-[#1E293B]">
+        {/* Search Input */}
+        <div className="p-2.5 border-b-2 border-black bg-[#F9FAFB]">
           <div className="relative">
-            <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#475569]" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-black stroke-[2.5]" />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Filter notes..."
-              className="w-full bg-[#0B0F17] border border-[#1E293B] rounded-lg pl-8 pr-2.5 py-1 text-xs text-[#F1F5F9] placeholder-[#475569] outline-none"
+              className="w-full bg-white border-2 border-black rounded-xl pl-9 pr-3 py-1.5 text-xs font-bold text-[#111827] placeholder-[#6B7280] outline-none shadow-[2px_2px_0px_#000]"
             />
           </div>
         </div>
 
         {/* Notes List */}
-        <div className="flex-1 overflow-y-auto py-2 px-1.5 space-y-1">
+        <div className="flex-1 overflow-y-auto p-2.5 space-y-1.5">
           {loading ? (
             <NoteSkeleton />
           ) : filteredNotes.length === 0 ? (
             <div className="text-center py-12 px-4">
-              <FileText size={28} className="mx-auto text-[#1E293B] mb-2" />
-              <p className="text-xs text-[#475569]">No notes found</p>
+              <div className="w-12 h-12 rounded-2xl bg-[#F0FDF4] border-2 border-black flex items-center justify-center mx-auto mb-3 shadow-[2px_2px_0px_#000]">
+                <FileText size={24} className="text-[#15803D] stroke-[2.5]" />
+              </div>
+              <p className="text-xs font-black text-[#111827]">No notes found</p>
               <button
                 onClick={createNote}
-                className="btn-ghost text-xs mt-3 inline-flex items-center gap-1 text-[#818CF8]"
+                className="btn-primary text-xs mt-3.5 inline-flex items-center gap-1.5 py-1.5 px-3"
               >
-                <Plus size={12} /> New Note
+                <Plus size={13} className="stroke-[3]" /> New Note
               </button>
             </div>
           ) : (
@@ -514,17 +554,17 @@ export default function NotesStudio() {
                     loadNote(note);
                     navigate(`/notes/${note._id}`);
                   }}
-                  className={`w-full text-left px-3 py-2 rounded-xl transition-all ${
+                  className={`w-full text-left px-3 py-2.5 rounded-xl transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#6366F1]/15 border border-[#6366F1]/30 text-[#F1F5F9]'
-                      : 'hover:bg-[#1E293B]/60 text-[#94A3B8] border border-transparent'
+                      ? 'bg-[#A3E635] text-black border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+                      : 'bg-white hover:bg-[#F0FDF4] text-[#1F2937] border-2 border-transparent hover:border-black/30'
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-sm">{note.emoji || '📝'}</span>
-                    <span className="text-xs font-semibold truncate flex-1">{note.title}</span>
+                    <span className="text-xs font-black truncate flex-1">{note.title}</span>
                   </div>
-                  <div className="flex items-center justify-between text-[10px] text-[#475569] mt-1 pl-6">
+                  <div className="flex items-center justify-between text-[10px] font-bold text-[#4B5563] mt-1 pl-6">
                     <span>
                       {new Date(note.updatedAt || Date.now()).toLocaleDateString('en-US', {
                         month: 'short',
@@ -532,8 +572,8 @@ export default function NotesStudio() {
                       })}
                     </span>
                     {note.isShared && (
-                      <span className="text-indigo-400 font-medium flex items-center gap-0.5">
-                        <Link2 size={9} /> shared
+                      <span className="text-black bg-white px-1.5 py-0.2 rounded border border-black font-black flex items-center gap-0.5 shadow-[1px_1px_0px_#000]">
+                        <Link2 size={9} className="stroke-[3]" /> shared
                       </span>
                     )}
                   </div>
@@ -544,20 +584,20 @@ export default function NotesStudio() {
         </div>
       </div>
 
-      {/* ── Center Editor Area ──────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col overflow-hidden bg-[#0B0F17]">
+      {/* ── Main Workspace: Crisp White Panels with 2px Solid Black Borders ── */}
+      <div className="flex-1 flex flex-col overflow-hidden bg-white">
         {activeNote ? (
           <>
             {/* Top Toolbar */}
-            <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 border-b border-[#1E293B] bg-[#0D1220]">
-              <div className="flex items-center gap-2 flex-1 min-w-[200px]">
+            <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-3 border-b-2 border-black bg-white">
+              <div className="flex items-center gap-2.5 flex-1 min-w-[200px]">
                 <input
                   value={emoji}
                   onChange={(e) => {
                     setEmoji(e.target.value);
                     setDirty(true);
                   }}
-                  className="w-8 text-center bg-transparent text-xl outline-none cursor-pointer"
+                  className="w-9 h-9 text-center bg-[#F0FDF4] border-2 border-black rounded-xl text-lg outline-none cursor-pointer shadow-[2px_2px_0px_#000]"
                   maxLength={2}
                   title="Change emoji"
                 />
@@ -568,121 +608,121 @@ export default function NotesStudio() {
                     setDirty(true);
                   }}
                   placeholder="Note Title..."
-                  className="flex-1 bg-transparent text-base md:text-lg font-bold text-[#F1F5F9] outline-none placeholder-[#334155]"
+                  className="flex-1 bg-transparent text-base md:text-xl font-black text-[#111827] outline-none placeholder-[#9CA3AF]"
                 />
                 {dirty && (
-                  <span className="text-[11px] text-[#F59E0B] bg-amber-500/10 px-2 py-0.5 rounded font-mono">
+                  <span className="text-[11px] font-black text-black bg-[#FDE047] px-2 py-0.5 rounded-lg border-2 border-black shadow-[2px_2px_0px_#000]">
                     Unsaved
                   </span>
                 )}
               </div>
 
-              {/* Action buttons */}
-              <div className="flex items-center gap-1.5 flex-wrap">
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => setPreview((p) => !p)}
-                  className={`btn-ghost text-xs py-1.5 px-2.5 ${preview ? 'text-[#818CF8] bg-[#6366F1]/10' : ''}`}
+                  className={`btn-ghost text-xs py-1.5 px-2.5 ${preview ? 'bg-[#A3E635]' : ''}`}
                   title="Toggle Markdown Preview"
                 >
-                  {preview ? <Edit3 size={14} /> : <Eye size={14} />}
+                  {preview ? <Edit3 size={14} className="stroke-[2.5]" /> : <Eye size={14} className="stroke-[2.5]" />}
                   <span className="hidden sm:inline">{preview ? 'Edit' : 'Preview'}</span>
                 </button>
 
                 <button
                   onClick={toggleShare}
-                  className={`btn-ghost text-xs py-1.5 px-2.5 ${shareInfo?.isShared ? 'text-indigo-400' : ''}`}
+                  className={`btn-ghost text-xs py-1.5 px-2.5 ${shareInfo?.isShared ? 'bg-[#A3E635]' : ''}`}
                   title="Share Note"
                 >
-                  <Share2 size={14} />
+                  <Share2 size={14} className="stroke-[2.5]" />
                   <span className="hidden sm:inline">Share</span>
                 </button>
 
                 <button
                   onClick={downloadMarkdown}
                   className="btn-ghost text-xs py-1.5 px-2.5"
-                  title="Download .md"
+                  title="Download .md file"
                 >
-                  <Download size={14} />
+                  <Download size={14} className="stroke-[2.5]" />
                 </button>
 
                 <button
                   onClick={saveNote}
                   disabled={saving}
-                  className="btn-primary text-xs py-1.5 px-3"
+                  className="btn-primary text-xs py-1.5 px-3.5"
                 >
-                  <Save size={14} />
+                  <Save size={14} className="stroke-[2.5]" />
                   <span className="hidden sm:inline">{saving ? 'Saving...' : 'Save'}</span>
                 </button>
 
                 <button
                   onClick={deleteNote}
-                  className="btn-danger text-xs py-1.5 px-2"
+                  className="btn-danger text-xs py-1.5 px-2.5"
                   title="Delete Note"
                 >
-                  <Trash2 size={13} />
+                  <Trash2 size={14} className="stroke-[2.5]" />
                 </button>
 
                 <button
                   onClick={() => setShowAI((v) => !v)}
                   className={`btn-ghost text-xs py-1.5 px-2.5 ${
-                    showAI ? 'text-[#818CF8] bg-[#6366F1]/10 border border-[#6366F1]/30' : ''
+                    showAI ? 'bg-[#A3E635] border-2 border-black' : ''
                   }`}
                   title="Toggle AI Copilot"
                 >
-                  <Sparkles size={14} className="text-[#818CF8]" />
+                  <Sparkles size={14} className="stroke-[2.5] text-black" />
                   <span className="hidden sm:inline">Copilot</span>
                 </button>
               </div>
             </div>
 
-            {/* Markdown formatting quickbar (when editing) */}
+            {/* Markdown Formatting Quickbar (when editing) */}
             {!preview && (
-              <div className="flex items-center gap-1 px-4 py-1.5 border-b border-[#1E293B]/70 bg-[#0B0F17] text-xs text-[#64748B]">
+              <div className="flex items-center gap-1.5 px-4 py-2 border-b-2 border-black bg-[#F9FAFB] text-xs font-bold text-[#111827]">
                 <button
                   onClick={() => insertMarkdown('bold', 'bold text')}
-                  className="p-1 hover:text-[#F1F5F9] rounded hover:bg-[#1E293B]"
+                  className="p-1.5 hover:bg-white rounded-lg border border-transparent hover:border-black transition-colors"
                   title="Bold"
                 >
-                  <Bold size={13} />
+                  <Bold size={14} className="stroke-[3]" />
                 </button>
                 <button
                   onClick={() => insertMarkdown('italic', 'italic text')}
-                  className="p-1 hover:text-[#F1F5F9] rounded hover:bg-[#1E293B]"
+                  className="p-1.5 hover:bg-white rounded-lg border border-transparent hover:border-black transition-colors"
                   title="Italic"
                 >
-                  <Italic size={13} />
+                  <Italic size={14} className="stroke-[3]" />
                 </button>
                 <button
                   onClick={() => insertMarkdown('h2', 'Heading')}
-                  className="p-1 hover:text-[#F1F5F9] rounded hover:bg-[#1E293B]"
+                  className="p-1.5 hover:bg-white rounded-lg border border-transparent hover:border-black transition-colors"
                   title="Heading"
                 >
-                  <Heading2 size={13} />
+                  <Heading2 size={14} className="stroke-[3]" />
                 </button>
                 <button
                   onClick={() => insertMarkdown('code', 'code')}
-                  className="p-1 hover:text-[#F1F5F9] rounded hover:bg-[#1E293B]"
+                  className="p-1.5 hover:bg-white rounded-lg border border-transparent hover:border-black transition-colors"
                   title="Inline Code"
                 >
-                  <Code size={13} />
+                  <Code size={14} className="stroke-[3]" />
                 </button>
                 <button
                   onClick={() => insertMarkdown('list', 'List item')}
-                  className="p-1 hover:text-[#F1F5F9] rounded hover:bg-[#1E293B]"
+                  className="p-1.5 hover:bg-white rounded-lg border border-transparent hover:border-black transition-colors"
                   title="Bullet List"
                 >
-                  <List size={13} />
+                  <List size={14} className="stroke-[3]" />
                 </button>
-                <span className="text-[#334155] mx-1">|</span>
-                <span className="text-[11px] text-[#475569]">Markdown Supported</span>
+                <span className="text-[#D1D5DB] mx-1 font-normal">|</span>
+                <span className="text-[11px] font-black text-[#6B7280]">Markdown Enabled</span>
               </div>
             )}
 
             {/* Public Link Notification Banner */}
             {shareInfo?.isShared && (
-              <div className="flex items-center justify-between px-4 py-2 bg-[#6366F1]/10 border-b border-[#6366F1]/20 text-xs text-[#818CF8]">
+              <div className="flex items-center justify-between px-4 py-2 bg-[#ECFDF5] border-b-2 border-black text-xs font-black text-[#15803D]">
                 <div className="flex items-center gap-2 truncate">
-                  <Link2 size={13} className="flex-shrink-0" />
+                  <Link2 size={14} className="flex-shrink-0 stroke-[3]" />
                   <span className="truncate">Public Link: {shareInfo.url}</span>
                 </div>
                 <button
@@ -690,7 +730,7 @@ export default function NotesStudio() {
                     navigator.clipboard.writeText(shareInfo.url);
                     toast.success('Copied share link!');
                   }}
-                  className="text-xs font-bold underline ml-2 flex-shrink-0"
+                  className="text-xs font-black text-black bg-white px-2 py-0.5 rounded-lg border-2 border-black shadow-[1px_1px_0px_#000] ml-2 flex-shrink-0 cursor-pointer"
                 >
                   Copy Link
                 </button>
@@ -698,7 +738,7 @@ export default function NotesStudio() {
             )}
 
             {/* Editor Body */}
-            <div className="flex-1 flex overflow-hidden">
+            <div className="flex-1 flex overflow-hidden bg-white">
               {/* Document Input or Preview */}
               <div className="flex-1 overflow-y-auto">
                 {preview ? (
@@ -706,7 +746,7 @@ export default function NotesStudio() {
                     {content ? (
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
                     ) : (
-                      <p className="text-[#475569] italic">Nothing to preview yet...</p>
+                      <p className="text-[#9CA3AF] italic">Nothing to preview yet...</p>
                     )}
                   </div>
                 ) : (
@@ -718,7 +758,7 @@ export default function NotesStudio() {
                       setDirty(true);
                     }}
                     placeholder={`# Welcome to Note Studio\n\nStart writing in Markdown...\n\n- Press the AI Copilot ✨ button to summarize or generate flashcards\n- Switch to Preview mode anytime`}
-                    className="w-full h-full bg-transparent text-[#CBD5E1] p-6 md:p-8 font-mono text-sm leading-relaxed resize-none outline-none"
+                    className="w-full h-full bg-white text-[#111827] p-6 md:p-8 font-mono text-sm leading-relaxed resize-none outline-none"
                     spellCheck
                   />
                 )}
@@ -729,10 +769,10 @@ export default function NotesStudio() {
                 {showAI && (
                   <motion.div
                     initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: 320, opacity: 1 }}
+                    animate={{ width: 330, opacity: 1 }}
                     exit={{ width: 0, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="border-l border-[#1E293B] overflow-hidden flex-shrink-0 hidden md:block"
+                    className="border-l-2 border-black overflow-hidden flex-shrink-0 hidden md:block bg-white"
                   >
                     <AICopilot
                       noteId={activeNote._id}
@@ -746,17 +786,63 @@ export default function NotesStudio() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-[#1E293B]/70 flex items-center justify-center mb-4">
-              <FileText size={32} className="text-[#475569]" />
-            </div>
-            <h3 className="text-lg font-bold text-[#F1F5F9]">No note selected</h3>
-            <p className="text-xs text-[#64748B] mt-1 max-w-sm mb-5">
-              Select an existing note from the sidebar or initialize a fresh document to begin.
-            </p>
-            <button onClick={createNote} className="btn-primary">
-              <Plus size={16} /> Create Note
-            </button>
+          /* ── 'No note selected' State: Vibrant, Living Neo-Brutalist Sticker Area ── */
+          <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 text-center bg-[#F0FDF4] relative overflow-hidden">
+            {/* Background Vector Starbursts & Sparkles Accents */}
+            <VectorStarburst size={56} className="absolute top-10 left-12 opacity-35 pointer-events-none animate-pulse-slow" />
+            <VectorSparkle size={36} className="absolute top-16 right-16 opacity-45 pointer-events-none" />
+            <VectorStarburst size={44} className="absolute bottom-12 right-20 opacity-30 pointer-events-none" />
+            <VectorSparkle size={32} className="absolute bottom-16 left-24 opacity-40 pointer-events-none" />
+
+            {/* Central Crisp White Container Card with 2px Black Border and Solid Drop Shadow */}
+            <motion.div
+              initial={{ scale: 0.94, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.25 }}
+              className="bg-white rounded-3xl p-8 sm:p-12 max-w-lg w-full border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative z-10"
+            >
+              {/* Card Corner Vector Sparkle */}
+              <div className="absolute -top-3 -right-3">
+                <VectorStarburst size={32} />
+              </div>
+
+              {/* Playful Sticker Icon Illustration */}
+              <div className="w-20 h-20 rounded-3xl bg-[#A3E635] border-2 border-black shadow-[4px_4px_0px_#000] flex items-center justify-center mx-auto mb-6 relative">
+                <FileText size={38} className="text-black stroke-[2.5]" />
+                <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-white rounded-full border-2 border-black flex items-center justify-center shadow-[1px_1px_0px_#000]">
+                  <Sparkles size={14} className="text-black stroke-[2.5]" />
+                </div>
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl font-black text-[#111827] tracking-tight mb-2">
+                No note selected
+              </h2>
+
+              <p className="text-xs sm:text-sm font-bold text-[#4B5563] max-w-sm mx-auto mb-7 leading-relaxed">
+                Select an existing note from the notebook sidebar or ignite a fresh document with Markdown and AI support.
+              </p>
+
+              {/* Prominent Lime-Green 'Create Note' Sticker Button */}
+              <button
+                onClick={createNote}
+                className="px-6 py-3.5 bg-[#A3E635] hover:bg-[#8cee2b] active:translate-x-0.5 active:translate-y-0.5 text-black font-black text-sm md:text-base rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2.5 mx-auto cursor-pointer"
+              >
+                <Plus size={18} className="stroke-[3]" /> Create Note
+              </button>
+
+              {/* Feature Sticker Pills */}
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-8 pt-6 border-t-2 border-black/10">
+                <span className="text-[11px] font-black bg-[#F0FDF4] text-black px-2.5 py-1 rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+                  ✍️ Markdown Editor
+                </span>
+                <span className="text-[11px] font-black bg-[#DCFCE7] text-black px-2.5 py-1 rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+                  ⚡ AI Summaries
+                </span>
+                <span className="text-[11px] font-black bg-[#FEF08A] text-black px-2.5 py-1 rounded-xl border-2 border-black shadow-[2px_2px_0px_#000]">
+                  🃏 Auto Flashcards
+                </span>
+              </div>
+            </motion.div>
           </div>
         )}
       </div>

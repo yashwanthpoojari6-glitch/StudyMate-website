@@ -1,25 +1,48 @@
-// pages/FocusRoom.jsx — High-performance Pomodoro timer + ambient soundscape engine
+// pages/FocusRoom.jsx — Neo-Brutalist Pomodoro focus chamber & ambient soundscape engine
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import FocusTimer from '../components/FocusTimer';
 import Heatmap from '../components/Heatmap';
 import api from '../services/api';
 import {
-  Volume2, VolumeX, Wind, CloudRain, Music, Waves, Coffee,
-  Sparkles, Flame, CheckCircle, Zap, Sliders, Play, Pause
+  Volume2, VolumeX, Wind, CloudRain, Music, Waves,
+  Zap, Sliders, Sparkles, Flame, Clock
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+// ── Vector Starburst & Sparkle Accents ──────────────────────────────────────────
+const VectorStarburst = ({ size = 32, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" className={className}>
+    <path
+      d="M16 0 L18 12 L30 16 L18 20 L16 32 L14 20 L2 16 L14 12 Z"
+      fill="#A3E635"
+      stroke="#000"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const VectorSparkle = ({ size = 20, className = '' }) => (
+  <svg width={size} height={size} viewBox="0 0 20 20" fill="none" className={className}>
+    <path
+      d="M10 0 L11.5 7 L18.5 10 L11.5 13 L10 20 L8.5 13 L1.5 10 L8.5 7 Z"
+      fill="#BBF7D0"
+      stroke="#000"
+      strokeWidth="1.5"
+    />
+  </svg>
+);
+
 // ── Web Audio API Soundscape Engine ───────────────────────────────────────────
-// Fully synthetic sound generator without requiring any external audio assets.
 const createAudioContext = () => new (window.AudioContext || window.webkitAudioContext)();
 
 const SOUNDSCAPES = [
-  { id: 'none', label: 'Silence', icon: VolumeX, description: 'No background audio', type: 'none' },
-  { id: 'rain', label: 'Rainfall', icon: CloudRain, description: 'Soft precipitation noise', type: 'brown' },
-  { id: 'white', label: 'White Noise', icon: Wind, description: 'Static deep concentration', type: 'white' },
-  { id: 'waves', label: 'Ocean Waves', icon: Waves, description: 'Rhythmic rolling surf', type: 'ocean' },
-  { id: 'lofi', label: 'Lo-Fi Chill', icon: Music, description: 'Warm synthesizer drone', type: 'lofi' },
+  { id: 'none', label: 'Silence', icon: VolumeX, description: 'No background audio' },
+  { id: 'rain', label: 'Rainfall', icon: CloudRain, description: 'Soft precipitation' },
+  { id: 'white', label: 'White Noise', icon: Wind, description: 'Deep concentration' },
+  { id: 'waves', label: 'Ocean Waves', icon: Waves, description: 'Rhythmic rolling surf' },
+  { id: 'lofi', label: 'Lo-Fi Chill', icon: Music, description: 'Warm synthesizer drone' },
 ];
 
 function useSoundscape() {
@@ -69,7 +92,6 @@ function useSoundscape() {
           if (id === 'white') {
             data[i] = white * 0.3;
           } else {
-            // Leaky integrator produces Brown noise
             lastOut = (lastOut + 0.02 * white) / 1.02;
             data[i] = lastOut * 3.2;
           }
@@ -82,12 +104,11 @@ function useSoundscape() {
         source.start();
         nodeRef.current = source;
       } else if (id === 'lofi') {
-        // Melodic ambient soundscape using dual harmonic oscillators
         const osc = ctx.createOscillator();
         const filter = ctx.createBiquadFilter();
 
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(130.81, ctx.currentTime); // C3 chord tone
+        osc.frequency.setValueAtTime(130.81, ctx.currentTime);
 
         filter.type = 'lowpass';
         filter.frequency.value = 650;
@@ -97,7 +118,6 @@ function useSoundscape() {
         filter.connect(gainRef.current);
         osc.start();
 
-        // Subtle LFO vibrato
         const lfo = ctx.createOscillator();
         const lfoGain = ctx.createGain();
         lfo.frequency.value = 0.3;
@@ -173,66 +193,83 @@ export default function FocusRoom() {
   }, [autoTriggerSound, activeSound, isPlaying, playAudio, stopAudio]);
 
   return (
-    <div className="p-6 md:p-8 max-w-6xl mx-auto space-y-8 pb-28 md:pb-12">
+    <div className="p-6 md:p-8 max-w-6xl mx-auto space-y-8 pb-28 md:pb-12 relative overflow-hidden select-none">
+      {/* ── Scattered Black & Green Vector Sparkles / Starbursts ─────────────── */}
+      <VectorStarburst size={48} className="absolute top-4 right-10 opacity-30 pointer-events-none animate-pulse-slow hidden sm:block" />
+      <VectorSparkle size={32} className="absolute top-28 left-6 opacity-35 pointer-events-none hidden md:block" />
+      <VectorStarburst size={36} className="absolute bottom-40 right-8 opacity-25 pointer-events-none hidden sm:block" />
+      <VectorSparkle size={28} className="absolute bottom-20 left-12 opacity-35 pointer-events-none hidden sm:block" />
+
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1E293B]/80 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-black pb-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#F1F5F9] flex items-center gap-2.5 tracking-tight">
-            <Zap size={26} className="text-[#6366F1]" />
-            Focus Room
-          </h1>
-          <p className="text-xs md:text-sm text-[#64748B] mt-1">
-            Immersive deep work chamber with automated ambient soundscapes
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#A3E635] flex items-center justify-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+              <Zap size={22} className="text-black stroke-[3]" />
+            </div>
+            <h1 className="text-2xl md:text-3xl font-black text-[#111827] tracking-tight">
+              Focus Room
+            </h1>
+          </div>
+          <p className="text-xs md:text-sm text-[#4B5563] mt-1.5 font-bold">
+            Immersive deep work chamber with automated ambient soundscapes &amp; pomodoro flow
           </p>
         </div>
 
-        {/* Status Indicator */}
-        <div className="flex items-center gap-2 px-3.5 py-1.5 bg-[#0D1220] border border-[#1E293B] rounded-full text-xs text-[#94A3B8]">
-          <span className={`w-2 h-2 rounded-full ${isPlaying ? 'bg-emerald-400 animate-ping' : 'bg-[#475569]'}`} />
-          <span>{isPlaying ? 'Soundscape Active' : 'Soundscape Paused'}</span>
+        {/* Status Indicator Sticker */}
+        <div className="flex items-center gap-2.5 px-4 py-2 bg-white border-2 border-black rounded-full shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] text-xs font-black text-black">
+          <span className={`w-3 h-3 rounded-full border border-black ${isPlaying ? 'bg-[#A3E635] animate-ping' : 'bg-gray-300'}`} />
+          <span>{isPlaying ? 'Soundscape Active' : 'Soundscape Idle'}</span>
         </div>
       </div>
 
       {/* ── Main Chamber: Timer & Soundscape Engine ────────────────────────── */}
-      <div className="grid lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column: Pomodoro Circular Timer (7 cols) */}
+      <div className="grid lg:grid-cols-12 gap-7 items-start">
+        {/* Left Column: Pomodoro Timer Panel — Stark white card with thick 2px black border & harsh drop shadow */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="lg:col-span-7 glass-card p-6 md:p-8 border border-[#1E293B] flex flex-col items-center justify-center relative overflow-hidden"
+          className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-10 border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex flex-col items-center justify-center relative overflow-hidden"
         >
-          <div className="absolute top-0 left-0 w-48 h-48 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+          {/* Corner starburst accent inside panel */}
+          <div className="absolute -top-2 -right-2 pointer-events-none">
+            <VectorStarburst size={32} />
+          </div>
+
           <FocusTimer
             onSessionComplete={fetchFocusTelemetry}
             onStateChange={handleTimerStateChange}
           />
         </motion.div>
 
-        {/* Right Column: Soundscape Deck & Triggers (5 cols) */}
+        {/* Right Column: Soundscape Deck & Triggers — Stark white card with thick 2px black border & harsh drop shadow */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="lg:col-span-5 glass-card p-6 border border-[#1E293B] space-y-6"
+          className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-7 border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] space-y-5 relative overflow-hidden"
         >
-          <div className="flex items-center justify-between pb-3 border-b border-[#1E293B]">
-            <div className="flex items-center gap-2">
-              <Volume2 size={18} className="text-[#818CF8]" />
-              <h2 className="text-sm font-bold text-[#F1F5F9] uppercase tracking-wider">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-3.5 border-b-2 border-black">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-[#A3E635] flex items-center justify-center border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
+                <Volume2 size={16} className="text-black stroke-[3]" />
+              </div>
+              <h2 className="text-sm font-black text-[#111827] uppercase tracking-wider">
                 Ambient Soundscape
               </h2>
             </div>
             {isPlaying && (
-              <div className="flex items-end gap-0.5 h-4">
-                <span className="w-1 bg-[#6366F1] rounded animate-bounce h-3" />
-                <span className="w-1 bg-[#6366F1] rounded animate-bounce delay-100 h-4" />
-                <span className="w-1 bg-[#6366F1] rounded animate-bounce delay-200 h-2" />
+              <div className="flex items-end gap-1 h-5 px-2 py-0.5 bg-lime-100 rounded-md border border-black">
+                <span className="w-1 bg-black rounded-full animate-bounce h-3" />
+                <span className="w-1 bg-black rounded-full animate-bounce delay-100 h-4" />
+                <span className="w-1 bg-black rounded-full animate-bounce delay-200 h-2" />
               </div>
             )}
           </div>
 
-          {/* Sound Choices Grid */}
-          <div className="grid grid-cols-2 gap-2.5">
+          {/* Sound Choices Grid: Selectable Sticker Cards */}
+          <div className="grid grid-cols-2 gap-3">
             {SOUNDSCAPES.map(({ id, label, icon: Icon, description }) => {
               const isSelected = activeSound === id;
 
@@ -240,33 +277,41 @@ export default function FocusRoom() {
                 <button
                   key={id}
                   onClick={() => playAudio(id)}
-                  className={`flex flex-col items-start p-3 rounded-xl border text-left transition-all ${
+                  className={`flex flex-col items-start p-3 rounded-2xl border-2 border-black text-left transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#6366F1]/15 border-[#6366F1]/50 text-[#F1F5F9] shadow-md shadow-indigo-500/10'
-                      : 'bg-[#0B0F17]/70 border-[#1E293B] text-[#94A3B8] hover:border-[#334155]'
+                      ? 'bg-[#A3E635] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-y-0.5 font-black'
+                      : 'bg-white text-black hover:bg-[#F0FDF4] shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
                   }`}
                 >
-                  <div className="flex items-center justify-between w-full mb-1.5">
-                    <Icon size={16} className={isSelected ? 'text-[#818CF8]' : 'text-[#64748B]'} />
+                  <div className="flex items-center justify-between w-full mb-2">
+                    <div
+                      className={`w-7 h-7 rounded-lg flex items-center justify-center border-2 border-black ${
+                        isSelected ? 'bg-white' : 'bg-[#F0FDF4]'
+                      }`}
+                    >
+                      <Icon size={15} className="text-black stroke-[2.5]" />
+                    </div>
                     {isSelected && isPlaying && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-black animate-ping" />
                     )}
                   </div>
-                  <span className="text-xs font-bold text-[#F1F5F9]">{label}</span>
-                  <span className="text-[10px] text-[#64748B] line-clamp-1">{description}</span>
+                  <span className="text-xs font-black text-black">{label}</span>
+                  <span className={`text-[10px] font-bold line-clamp-1 ${isSelected ? 'text-black/80' : 'text-[#6B7280]'}`}>
+                    {description}
+                  </span>
                 </button>
               );
             })}
           </div>
 
-          {/* Volume Slider & Controls */}
+          {/* Volume Slider & Output Container */}
           {activeSound !== 'none' && (
-            <div className="p-3.5 bg-[#0B0F17]/80 rounded-xl border border-[#1E293B] space-y-3">
-              <div className="flex items-center justify-between text-xs text-[#94A3B8]">
+            <div className="p-4 bg-[#F9FAFB] rounded-2xl border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] space-y-3">
+              <div className="flex items-center justify-between text-xs font-black text-black">
                 <span className="flex items-center gap-1.5">
-                  <Sliders size={13} className="text-[#818CF8]" /> Volume Output
+                  <Sliders size={14} className="stroke-[2.5]" /> Volume Output
                 </span>
-                <span className="font-mono text-[#F1F5F9] font-bold">
+                <span className="font-mono text-black bg-white px-2 py-0.5 rounded-md border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
                   {Math.round(volume * 100)}%
                 </span>
               </div>
@@ -277,27 +322,27 @@ export default function FocusRoom() {
                 step="0.05"
                 value={volume}
                 onChange={(e) => setVolume(parseFloat(e.target.value))}
-                className="w-full accent-[#6366F1] cursor-pointer"
+                className="w-full accent-[#15803D] cursor-pointer h-2 bg-[#E5E7EB] rounded-lg border border-black"
               />
             </div>
           )}
 
           {/* Soundscape Auto-Trigger Switch */}
-          <div className="flex items-center justify-between p-3.5 bg-[#0B0F17]/60 rounded-xl border border-[#1E293B]">
-            <div>
-              <p className="text-xs font-bold text-[#F1F5F9]">Auto-trigger with Timer</p>
-              <p className="text-[10px] text-[#64748B] mt-0.5">
+          <div className="flex items-center justify-between p-4 bg-[#F9FAFB] rounded-2xl border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+            <div className="pr-3">
+              <p className="text-xs font-black text-black">Auto-trigger with Timer</p>
+              <p className="text-[10px] font-bold text-[#4B5563] mt-0.5">
                 Automatically play when focus starts, pause on break
               </p>
             </div>
             <button
               onClick={() => setAutoTriggerSound((v) => !v)}
-              className={`w-11 h-6 rounded-full transition-colors relative p-1 ${
-                autoTriggerSound ? 'bg-[#6366F1]' : 'bg-[#1E293B]'
+              className={`w-12 h-6.5 rounded-full border-2 border-black transition-colors relative p-0.5 cursor-pointer flex-shrink-0 ${
+                autoTriggerSound ? 'bg-[#A3E635]' : 'bg-[#E5E7EB]'
               }`}
             >
               <div
-                className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                className={`w-5 h-5 rounded-full bg-white border-2 border-black shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-transform ${
                   autoTriggerSound ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
@@ -309,36 +354,36 @@ export default function FocusRoom() {
       {/* ── Analytics & Streak Metrics ─────────────────────────────────────── */}
       {stats && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="glass-card p-4 border border-[#1E293B] text-center">
-            <p className="text-2xl font-bold font-mono text-[#F1F5F9]">
+          <div className="bg-lime-200 rounded-2xl p-5 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-center relative overflow-hidden">
+            <p className="text-3xl font-black font-mono text-black">
               {Math.round((stats.totalFocusMinutes || 0) / 60)}h
             </p>
-            <p className="text-xs font-semibold text-[#818CF8] mt-1">All-Time Deep Work</p>
-            <p className="text-[10px] text-[#64748B] mt-0.5">{stats.totalFocusMinutes || 0} minutes logged</p>
+            <p className="text-xs font-black text-black mt-1 uppercase tracking-wider">All-Time Deep Work</p>
+            <p className="text-[10px] font-bold text-black/75 mt-0.5">{stats.totalFocusMinutes || 0} minutes logged</p>
           </div>
 
-          <div className="glass-card p-4 border border-[#1E293B] text-center">
-            <p className="text-2xl font-bold font-mono text-[#10B981]">
+          <div className="bg-emerald-100 rounded-2xl p-5 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-center relative overflow-hidden">
+            <p className="text-3xl font-black font-mono text-black">
               {((stats.weeklyMinutes || 0) / 60).toFixed(1)}h
             </p>
-            <p className="text-xs font-semibold text-[#94A3B8] mt-1">This Week's Focus</p>
-            <p className="text-[10px] text-[#64748B] mt-0.5">{stats.weeklySessions || 0} completed intervals</p>
+            <p className="text-xs font-black text-black mt-1 uppercase tracking-wider">This Week's Focus</p>
+            <p className="text-[10px] font-bold text-black/75 mt-0.5">{stats.weeklySessions || 0} completed intervals</p>
           </div>
 
-          <div className="glass-card p-4 border border-[#1E293B] text-center">
-            <p className="text-2xl font-bold font-mono text-[#F59E0B]">
+          <div className="bg-green-200 rounded-2xl p-5 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-center relative overflow-hidden">
+            <p className="text-3xl font-black font-mono text-black">
               {stats.streak?.count || 1} 🔥
             </p>
-            <p className="text-xs font-semibold text-[#94A3B8] mt-1">Consecutive Day Streak</p>
-            <p className="text-[10px] text-[#64748B] mt-0.5">Consistency unlocks mastery</p>
+            <p className="text-xs font-black text-black mt-1 uppercase tracking-wider">Day Streak</p>
+            <p className="text-[10px] font-bold text-black/75 mt-0.5">Consistency unlocks mastery</p>
           </div>
         </div>
       )}
 
       {/* ── Annual Study Heatmap ───────────────────────────────────────────── */}
-      <div className="glass-card p-6 border border-[#1E293B]">
-        <h2 className="text-sm font-bold uppercase tracking-wider text-[#94A3B8] mb-4">
-          Focus History & Velocity
+      <div className="bg-white rounded-3xl p-6 border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+        <h2 className="text-sm font-black uppercase tracking-wider text-black mb-4 flex items-center gap-2">
+          <Clock size={16} className="stroke-[3]" /> Focus History &amp; Velocity
         </h2>
         <Heatmap data={heatmapData} />
       </div>
