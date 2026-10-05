@@ -22,7 +22,7 @@ connectDB();
 
 // ─── Global Middleware ────────────────────────────────────────────────────────
 app.use(cors({
-  origin: ['https://studymate-website.vercel.app', 'http://localhost:5173'],
+  origin: ['https://study-mate-brown-xi.vercel.app', 'http://localhost:5173'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
